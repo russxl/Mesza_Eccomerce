@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file://C%3A/Users/Russell/Downloads/AI-Projects/Mesza/mesza-app/app/not-found.tsx"],"sourcesContent":["export default function NotFound() {\r\n    return (\r\n        <div className=\"flex flex-col items-center justify-center min-h-screen bg-gray-100\">\r\n            <h1 className=\"text-6xl font-bold text-gray-800 mb-4\">404</h1>\r\n            <h2 className=\"text-2xl font-semibold text-gray-600 mb-4\">Page Not Found</h2>\r\n            <p className=\"text-gray-500 mb-8\">The page you're looking for doesn't exist or has been moved.</p>\r\n            <a\r\n                href=\"/\"\r\n                className=\"px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors\"\r\n            >\r\n                Return Home\r\n            </a>\r\n        </div>\r\n    );\r\n}"],"names":[],"mappings":";;;;;AAAe,SAAS;IACpB,qBACI,6WAAC;QAAI,WAAU;;0BACX,6WAAC;gBAAG,WAAU;0BAAwC;;;;;;0BACtD,6WAAC;gBAAG,WAAU;0BAA4C;;;;;;0BAC1D,6WAAC;gBAAE,WAAU;0BAAqB;;;;;;0BAClC,6WAAC;gBACG,MAAK;gBACL,WAAU;0BACb;;;;;;;;;;;;AAKb","debugId":null}}]
+}
