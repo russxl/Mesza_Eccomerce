@@ -1,23 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Minus, Plus, ShoppingCart, Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useProductStore } from "@/store/productStore";
-import useCartStore from "@/store/globalStore";
+import {  Star } from "lucide-react";
+
 
 export default function ProductActions({ product }: { product: any }) {
-  const [quantity, setQuantity] = useState(1);
 
-  console.log("ProductActions", product._id);
   // Track selected options for each variation
   const [selectedOptions, setSelectedOptions] = useState<{
     [type: string]: string;
   }>({});
   const [selectedPrice, setSelectedPrice] = useState(product.price);
 
-  const addToCart = useProductStore((state) => state.addToCart);
-  const dispatch = useCartStore((state) => state.dispatch);
+
   // Update price when a variation is selected
   const handleOptionChange = (variationType: string, value: string) => {
     setSelectedOptions((prev) => {
@@ -42,49 +37,6 @@ export default function ProductActions({ product }: { product: any }) {
 
       return updated;
     });
-  };
-
-  const handleAddToCart = () => {
-    if (typeof window === "undefined") return;
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-    // Find if the same product with the same selectedOptions exists
-    const existingIdx = cart.findIndex(
-      (item: any) =>
-        item.productId === (product._id || product.id) &&
-        JSON.stringify(item.selectedOptions) === JSON.stringify(selectedOptions)
-    );
-
-    if (existingIdx > -1) {
-      // If exists, just add to the quantity
-      cart[existingIdx].quantity += quantity;
-    } else {
-      // Else, add new item
-      cart.push({
-        productId: product._id || product.id,
-        name: product.name,
-        price: selectedPrice,
-        image: product.imageURLs?.[0],
-        quantity,
-        selectedOptions,
-      });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    if (addToCart) {
-      addToCart({
-        productId: product._id || product.id,
-        name: product.name,
-        price: selectedPrice,
-        image: product.imageURLs?.[0],
-        quantity,
-        selectedOptions,
-      });
-    }
-    if (typeof window !== "undefined") {
-      dispatch({ type: "incrementBy", quantity });
-      window.alert("Added to cart!");
-    }
   };
 
   return (

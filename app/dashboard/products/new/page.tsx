@@ -34,7 +34,6 @@ import {
   ProductData,
   ProductSchema,
   VariationOption,
-  Specification,
 } from "@/schema/product";
 import { useProductStore } from "@/store/productStore";
 import { useProductVariations } from "@/store/variationStore";
@@ -54,12 +53,6 @@ interface FormVariation {
     imageURL?: string;
   }[];
 }
-
-interface SpecificationData {
-  key: string;
-  value: string;
-}
-
 // Form-specific data structure
 interface ProductFormData extends Omit<ProductData, "variations"> {
   variationTypes?: string[];

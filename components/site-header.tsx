@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 
@@ -16,7 +17,7 @@ import useCartStore from "@/store/globalStore";
 
 export function SiteHeader() {
   const [isOpen, setIsOpen] = useState(false);
-  const cartCount = useCartStore((state) => state.cartCount);
+  useCartStore((state) => state.cartCount);
 
   const navigationLinks = [
     { href: "/", label: "Home" },
@@ -31,9 +32,11 @@ export function SiteHeader() {
         {/* Logo */}
         <div className="flex items-center gap-2">
           <Link href="/" className="text-xl">
-            <img
+            <Image
               src="/images/mesza-logo.png"
               alt="Mesza Logo"
+              width={120}
+              height={40}
               className="size-30"
             />
           </Link>

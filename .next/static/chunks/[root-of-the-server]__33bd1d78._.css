@@ -170,7 +170,6 @@
     --color-yellow-800: oklch(47.6% .114 61.907);
     --color-yellow-900: oklch(42.1% .095 57.708);
     --color-green-100: oklch(96.2% .044 156.743);
-    --color-green-500: oklch(72.3% .219 149.579);
     --color-green-800: oklch(44.8% .119 151.328);
     --color-green-900: oklch(39.3% .095 152.535);
     --color-emerald-100: oklch(95% .052 163.051);
@@ -178,7 +177,6 @@
     --color-emerald-400: oklch(76.5% .177 163.223);
     --color-emerald-500: oklch(69.6% .17 162.48);
     --color-emerald-600: oklch(59.6% .145 163.225);
-    --color-emerald-700: oklch(50.8% .118 165.612);
     --color-emerald-950: oklch(26.2% .051 172.552);
     --color-blue-600: oklch(54.6% .245 262.881);
     --color-blue-700: oklch(48.8% .243 264.376);
@@ -719,10 +717,6 @@
     margin-right: calc(var(--spacing) * 2);
   }
 
-  .mr-3 {
-    margin-right: calc(var(--spacing) * 3);
-  }
-
   .mb-1 {
     margin-bottom: calc(var(--spacing) * 1);
   }
@@ -952,10 +946,6 @@
 
   .h-24 {
     height: calc(var(--spacing) * 24);
-  }
-
-  .h-48 {
-    height: calc(var(--spacing) * 48);
   }
 
   .h-64 {
@@ -1218,10 +1208,6 @@
     min-width: 8rem;
   }
 
-  .min-w-\[800px\] {
-    min-width: 800px;
-  }
-
   .min-w-\[var\(--radix-select-trigger-width\)\] {
     min-width: var(--radix-select-trigger-width);
   }
@@ -1240,10 +1226,6 @@
 
   .caption-bottom {
     caption-side: bottom;
-  }
-
-  .border-collapse {
-    border-collapse: collapse;
   }
 
   .origin-\(--radix-dropdown-menu-content-transform-origin\) {
@@ -2323,10 +2305,6 @@
     color: var(--color-gray-900);
   }
 
-  .text-green-500 {
-    color: var(--color-green-500);
-  }
-
   .text-green-800 {
     color: var(--color-green-800);
   }
@@ -2904,12 +2882,6 @@
   }
 
   @media (hover: hover) {
-    .hover\:bg-emerald-700:hover {
-      background-color: var(--color-emerald-700);
-    }
-  }
-
-  @media (hover: hover) {
     .hover\:bg-gray-100:hover {
       background-color: var(--color-gray-100);
     }
@@ -2996,12 +2968,6 @@
   @media (hover: hover) {
     .hover\:text-destructive:hover {
       color: var(--destructive);
-    }
-  }
-
-  @media (hover: hover) {
-    .hover\:text-emerald-500:hover {
-      color: var(--color-emerald-500);
     }
   }
 

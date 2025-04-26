@@ -149,9 +149,9 @@ export default function FAQPage() {
                         is:
                       </p>
                       <ul className="list-disc list-inside mt-2 space-y-1">
-                        <li>At least 1" (25mm) thick</li>
-                        <li>Between 48" and 80" wide</li>
-                        <li>Between 24" and 30" deep</li>
+                        <li>At least 1&quot; (25mm) thick</li>
+                        <li>Between 48&quot; and 80&quot; wide</li>
+                        <li>Between 24&quot; and 30&quot; deep</li>
                       </ul>
                       <p className="mt-2">
                         Please note that using your own desktop may affect the
@@ -230,8 +230,8 @@ export default function FAQPage() {
                         The typical package dimensions are:
                       </p>
                       <ul className="list-disc list-inside mt-2 space-y-1">
-                        <li>Desktop box: 62" × 32" × 4" (for 60" desktop)</li>
-                        <li>Frame box: 42" × 12" × 8"</li>
+                        <li>Desktop box: 62&quot; × 32&quot; × 4&quot; (for 60&quot; desktop)</li>
+                        <li>Frame box: 42&quot; × 12&quot; × 8&quot;</li>
                       </ul>
                       <p className="mt-2">
                         We use eco-friendly packaging materials whenever
@@ -310,7 +310,7 @@ export default function FAQPage() {
                     <AccordionContent>
                       <p>
                         We offer a 30-day return policy on all our products. If
-                        you're not completely satisfied with your purchase, you
+                        you&apos;re not completely satisfied with your purchase, you
                         can return it within 30 days of delivery for a full
                         refund of the product price (shipping fees are
                         non-refundable).
@@ -318,7 +318,7 @@ export default function FAQPage() {
                       <p className="mt-2">
                         To be eligible for a return, your item must be in the
                         same condition that you received it, unused, and in its
-                        original packaging. You'll also need the receipt or
+                        original packaging. You&apos;ll also need the receipt or
                         proof of purchase.
                       </p>
                       <p className="mt-2">
@@ -353,7 +353,7 @@ export default function FAQPage() {
                       </ol>
                       <p className="mt-2">
                         Our team will review your claim and respond within 1-2
-                        business days. If your claim is approved, we'll arrange
+                        business days. If your claim is approved, we&apos;ll arrange
                         for repair, replacement parts, or a replacement product
                         at our discretion.
                       </p>
@@ -452,7 +452,7 @@ export default function FAQPage() {
                     <AccordionContent>
                       <p>
                         Yes, we provide comprehensive troubleshooting assistance
-                        for all our products. If you're experiencing issues with
+                        for all our products. If you&apos;re experiencing issues with
                         your desk, you can:
                       </p>
                       <ul className="list-disc list-inside mt-2 space-y-1">

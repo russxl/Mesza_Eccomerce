@@ -18,19 +18,19 @@ export default function CartPage() {
 
   useEffect(() => {
     const stored = localStorage.getItem("cart");
-    let items = stored ? JSON.parse(stored) : [];
+    const items = stored ? JSON.parse(stored) : [];
     // Deduplicate: combine quantities for same productId and selectedOptions (order-insensitive)
-    const deduped: any[] = [];
-    const serializeOptions = (opts: any) =>
+    const deduped: Cart[] = [];
+    const serializeOptions = (opts: Record<string, string> | undefined) =>
       JSON.stringify(
         Object.keys(opts || {})
           .sort()
           .reduce((acc, key) => {
-            acc[key] = opts[key];
+            acc[key] = opts![key];
             return acc;
-          }, {} as any)
+          }, {} as Record<string, string>)
       );
-    items.forEach((item: any) => {
+    items.forEach((item: Cart) => {
       const existing = deduped.find(
         (d) =>
           d.productId === item.productId &&

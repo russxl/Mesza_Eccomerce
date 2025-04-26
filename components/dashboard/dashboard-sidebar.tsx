@@ -20,11 +20,6 @@ import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
 import { useClerk } from "@clerk/nextjs"
 
-interface DashboardSidebarProps {
-  pathname: string
-  onSignOut: () => void
-}
-
 const sidebarLinks = [
   {
     title: "Dashboard",

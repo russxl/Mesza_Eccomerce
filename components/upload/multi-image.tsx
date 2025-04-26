@@ -7,6 +7,7 @@ import { type DropzoneOptions } from 'react-dropzone';
 import { Dropzone } from './dropzone';
 import { ProgressCircle } from './progress-circle';
 import { useUploader } from './uploader-provider';
+import Image from "next/image";
 
 /**
  * Props for the ImageList component.
@@ -72,10 +73,12 @@ const ImageList = React.forwardRef<HTMLDivElement, ImageListProps>(
               }
             >
               {displayUrl ? (
-                <img
+                <Image
                   className="h-full w-full rounded-md object-cover"
                   src={displayUrl}
                   alt={fileState.file.name}
+                  width={500}
+                  height={500}
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-secondary">
