@@ -40,7 +40,7 @@ export function DeleteProductButton({ productId }: DeleteProductButtonProps) {
       // Example: mutate('/api/products')
 
       setOpen(false)
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete the product. Please try again.",

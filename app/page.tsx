@@ -396,9 +396,9 @@ export default function Home() {
                       ))}
                     </div>
                     <p className="text-muted-foreground">
-                      "Ganda ng gawa. 7months ko ng gamit yung sakin maayos na
+                      &quot;Ganda ng gawa. 7months ko ng gamit yung sakin maayos na
                       maayos padin at working padin yung up and down mechanism
-                      ng desk na binili ko."
+                      ng desk na binili ko.&quot;
                     </p>
                   </div>
                 </CardContent>

@@ -146,7 +146,7 @@ export default function OrderSummaryPage() {
                             <div>
                               <h4 className="font-medium">Mesza Desk Pro</h4>
                               <p className="text-sm text-muted-foreground">
-                                60" × 30", Black
+                                60cm × 30cm × 100cm, Black
                               </p>
                               <p className="text-sm">Qty: 1</p>
                             </div>

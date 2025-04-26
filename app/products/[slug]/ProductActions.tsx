@@ -1,10 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import {  Star } from "lucide-react";
+import { Star } from "lucide-react";
 
+interface VariationOption {
+  value: string;
+  price?: number;
+  stockCount?: number;
+  isActive?: boolean;
+}
 
-export default function ProductActions({ product }: { product: any }) {
+interface Variation {
+  _id?: string;
+  type: string;
+  options: VariationOption[];
+}
+
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  variations?: Variation[];
+  imageURLs?: string[];
+  categories?: string[];
+  specifications?: Array<{ name: string; value: string }>;
+  reviews?: Array<{ rating: number; comment: string; author: string }>;
+}
+
+export default function ProductActions({ product }: { product: Product }) {
 
   // Track selected options for each variation
   const [selectedOptions, setSelectedOptions] = useState<{
@@ -21,11 +45,11 @@ export default function ProductActions({ product }: { product: any }) {
       // Calculate total price: base price + sum of all selected variation prices
       let total = product.price;
       if (Array.isArray(product.variations)) {
-        product.variations.forEach((variation: any) => {
+        product.variations.forEach((variation) => {
           const selectedValue = updated[variation.type];
           if (selectedValue) {
             const option = variation.options.find(
-              (o: any) => o.value === selectedValue
+              (o) => o.value === selectedValue
             );
             if (option && option.price) {
               total += option.price;
@@ -34,7 +58,6 @@ export default function ProductActions({ product }: { product: any }) {
         });
       }
       setSelectedPrice(total);
-
       return updated;
     });
   };
@@ -64,13 +87,13 @@ export default function ProductActions({ product }: { product: any }) {
       </div>
       {/* Variation selectors */}
       {Array.isArray(product.variations) &&
-        product.variations.map((variation: any, idx: number) => (
+        product.variations.map((variation, idx) => (
           <div className="space-y-2" key={variation._id || idx}>
             <label className="text-sm font-medium leading-none">
               {variation.type}
             </label>
             <div className="flex gap-2">
-              {variation.options.map((option: any, optIdx: number) => (
+              {variation.options.map((option, optIdx) => (
                 <button
                   key={optIdx}
                   type="button"
@@ -79,9 +102,7 @@ export default function ProductActions({ product }: { product: any }) {
                       ? "border-primary bg-primary/10"
                       : "border-gray-300"
                   }`}
-                  onClick={() =>
-                    handleOptionChange(variation.type, option.value)
-                  }
+                  onClick={() => handleOptionChange(variation.type, option.value)}
                 >
                   {option.value}
                 </button>

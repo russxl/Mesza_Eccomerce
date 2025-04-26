@@ -13,14 +13,6 @@ interface Specification {
   value: string;
 }
 
-// Define a type for product reviews
-interface Review {
-  id: string;
-  rating: number;
-  comment: string;
-  author: string;
-  date: string;
-}
 
 
 async function getProductById(slug: string) {
@@ -43,7 +35,7 @@ async function getProductById(slug: string) {
 export default async function ProductDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
   const product = await getProductById(slug);

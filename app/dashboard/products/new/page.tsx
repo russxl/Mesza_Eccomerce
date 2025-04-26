@@ -36,7 +36,6 @@ import {
   VariationOption,
 } from "@/schema/product";
 import { useProductStore } from "@/store/productStore";
-import { useProductVariations } from "@/store/variationStore";
 import { MultiImageDropzoneUsage } from "@/components/multiImageUpload";
 import { Plus as PlusIcon, Trash2 as TrashIcon } from "lucide-react";
 
@@ -64,13 +63,12 @@ export default function NewProductPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isVariationDialogOpen, setIsVariationDialogOpen] = useState(false);
   const [formVariations, setFormVariations] = useState<FormVariation[]>([]);
 
   // Use product store
   const { product, setProduct, resetProduct, createProduct } =
     useProductStore();
-
+  
   // Initialize the form with product from store or default
   const form = useForm<ProductFormData>({
     resolver: zodResolver(ProductSchema.omit({ variations: true })),
@@ -179,24 +177,6 @@ export default function NewProductPage() {
     }
   };
 
-  const { data: storedVariants, isLoading: variantsLoading } =
-    useProductVariations();
-
-  // Handlers for dynamic fields (imageURLs and categories)
-  const addImageURL = () => {
-    const currentURLs = form.getValues("imageURLs");
-    form.setValue("imageURLs", [...currentURLs, ""]);
-  };
-
-  const removeImageURL = (index: number) => {
-    const currentURLs = form.getValues("imageURLs");
-    if (currentURLs.length > 1) {
-      form.setValue(
-        "imageURLs",
-        currentURLs.filter((_, i) => i !== index)
-      );
-    }
-  };
 
   const addCategory = () => {
     const currentCategories = form.getValues("categories");
@@ -289,35 +269,6 @@ export default function NewProductPage() {
 
   // Common variation types for quick selection
   const commonVariationTypes = ["Size", "Color", "Material", "Style", "Weight"];
-
-  // Apply a variation set to the product
-  const applyVariationSet = (set: any) => {
-    // Convert the variation set to the format expected by our form
-    const newFormVariations = set.variations.map((variation: any) => ({
-      type: variation.name,
-      options: variation.options.map((option: any) => ({
-        value: option.value,
-        price: option.priceAdjustment
-          ? form.getValues("price") + option.priceAdjustment
-          : undefined,
-        stockCount: option.stockCount || 0,
-        isActive: true,
-      })),
-    }));
-
-    // Update the form variations
-    setFormVariations(newFormVariations);
-
-    // Close the dialog
-    setIsVariationDialogOpen(false);
-
-    // Show success toast
-    toast({
-      title: "Variation set applied",
-      description: `${set.name} has been applied to this product.`,
-      variant: "success",
-    });
-  };
 
   // Handlers for specifications
   const addSpecification = () => {

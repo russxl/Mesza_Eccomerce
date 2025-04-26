@@ -3,11 +3,9 @@ import {
   ShoppingCart,
   Truck,
   Copy,
-  MessageSquare,
   CreditCard,
   Package,
   Home,
-  ArrowRight,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";

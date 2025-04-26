@@ -1,3 +1,0 @@
-{
-  "/api/edgestore/[...edgestore]/route": "app/api/edgestore/[...edgestore]/route.js"
-}

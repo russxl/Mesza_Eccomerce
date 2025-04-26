@@ -7,11 +7,12 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function GET(
   request: Request,
-  { params }: { params: { productId: string } }
+  context: { params: Promise<{ productId: string }> }
 ) {
+  const { productId } = await context.params;
   try {
     const product = await convex.query(api.product.getProductbyId, {
-      productId: params.productId as Id<"products">,
+      productId: productId as Id<"products">,
     });
 
     if (!product) {
