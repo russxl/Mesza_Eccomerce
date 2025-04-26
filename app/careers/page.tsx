@@ -54,8 +54,8 @@ export default function CareersPage() {
                   Why Work With Us
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
-                  At Mesza, we're passionate about creating products that
-                  improve people's lives. Join us and be part of something
+                  At Mesza, we&apos;re passionate about creating products that
+                  improve people&apos;s lives. Join us and be part of something
                   meaningful.
                 </p>
               </div>
@@ -86,7 +86,7 @@ export default function CareersPage() {
                     <p className="text-muted-foreground">
                       Our products help people work more comfortably and
                       healthily. Your work directly contributes to improving
-                      people's well-being.
+                      people&apos;s well-being.
                     </p>
                   </div>
                 </CardContent>
@@ -115,7 +115,7 @@ export default function CareersPage() {
                     </div>
                     <h3 className="text-xl font-bold">Growth & Development</h3>
                     <p className="text-muted-foreground">
-                      We invest in our team's professional development with
+                      We invest in our team&apos;s professional development with
                       training, mentorship, and opportunities to learn new
                       skills and advance your career.
                     </p>
@@ -281,9 +281,9 @@ export default function CareersPage() {
                         San Francisco, CA or Remote
                       </p>
                       <p>
-                        We're looking for a talented product designer to help
+                        We&apos;re looking for a talented product designer to help
                         create innovative standing desk solutions that improve
-                        our customers' work experience.
+                        our customers&apos; work experience.
                       </p>
                     </div>
                     <Button asChild className="md:flex-shrink-0">
@@ -331,7 +331,7 @@ export default function CareersPage() {
                         San Francisco, CA
                       </p>
                       <p>
-                        We're seeking a creative marketing specialist to help
+                        We&apos;re seeking a creative marketing specialist to help
                         grow our brand and connect with customers who value
                         ergonomic workspace solutions.
                       </p>
@@ -403,7 +403,7 @@ export default function CareersPage() {
 
             <div className="mt-12 text-center">
               <p className="text-muted-foreground mb-6">
-                Don't see a position that matches your skills? We're always
+                Don&apos;t see a position that matches your skills? We&apos;re always
                 looking for talented individuals to join our team.
               </p>
               <Button asChild size="lg">
@@ -487,7 +487,7 @@ export default function CareersPage() {
                     <div>
                       <h3 className="text-xl font-bold">Offer & Onboarding</h3>
                       <p className="text-muted-foreground">
-                        If selected, you'll receive an offer and begin our
+                        If selected, you&apos;ll receive an offer and begin our
                         comprehensive onboarding process.
                       </p>
                     </div>

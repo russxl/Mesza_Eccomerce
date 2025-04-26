@@ -6,15 +6,9 @@ import { MessageCircle, MapPin, Facebook } from "lucide-react";
 import { FaFacebookMessenger } from "react-icons/fa";
 import {
   Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
   CardContent,
 } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 
 export default function ContactPage() {
   const [mapLoaded, setMapLoaded] = useState(false);

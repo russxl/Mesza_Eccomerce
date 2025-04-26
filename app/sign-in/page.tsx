@@ -3,6 +3,7 @@
 import { useSignIn } from "@clerk/nextjs";
 import { AlertCircle } from "lucide-react";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function AdminLogin() {
   const { signIn, isLoaded } = useSignIn();
@@ -24,7 +25,7 @@ export default function AdminLogin() {
         // After successful sign in, the user data will be automatically
         // processed by the webhook and stored in Convex
       });
-    } catch (err) {
+    } catch {
       setError("Failed to sign in with Google. Please try again.");
       setLoading(false);
     }
@@ -65,10 +66,12 @@ export default function AdminLogin() {
               <div className="w-5 h-5 border-2 border-gray-800 border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
-                <img
+                <Image
                   src="https://www.google.com/favicon.ico"
                   alt="Google"
-                  className="w-5 h-5 mr-3"
+                  width={18}
+                  height={18}
+                  className="mr-2"
                 />
                 Continue with Google
               </>

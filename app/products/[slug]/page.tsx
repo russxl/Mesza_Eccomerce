@@ -7,6 +7,22 @@ import { SiteFooter } from "@/components/site-footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductActions from "./ProductActions";
 
+// Define a type for product specifications
+interface Specification {
+  key: string;
+  value: string;
+}
+
+// Define a type for product reviews
+interface Review {
+  id: string;
+  rating: number;
+  comment: string;
+  author: string;
+  date: string;
+}
+
+
 async function getProductById(slug: string) {
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL ||
@@ -108,7 +124,7 @@ export default async function ProductDetailPage({
                 <TabsContent value="specifications" className="pt-6">
                   <div className="grid gap-4 sm:grid-cols-2">
                     {(product.specifications || []).map(
-                      (spec: any, idx: number) => (
+                      (spec: Specification, idx: number) => (
                         <div key={idx}>
                           <h4 className="font-medium">{spec.key}</h4>
                           <p className="text-sm text-muted-foreground">

@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/components/hooks/use-toast"
-import { useProduct, useProductStore } from "@/store/productStore"
+import {  useProductStore } from "@/store/productStore"
 
 interface DeleteProductButtonProps {
   productId: string

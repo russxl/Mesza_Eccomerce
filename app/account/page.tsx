@@ -278,7 +278,7 @@ export default function AccountPage() {
                             <div>
                               <h5 className="font-medium">Mesza Pro</h5>
                               <p className="text-sm text-muted-foreground">
-                                60" × 30", Black
+                                60&quot; × 30&quot;, Black
                               </p>
                               <p className="text-sm font-medium">$699.00</p>
                             </div>

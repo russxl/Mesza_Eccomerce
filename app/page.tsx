@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/accordion";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { useFilteredProducts, useProductStore } from "@/store/productStore";
+import { useFilteredProducts } from "@/store/productStore";
 import HomeSkeleton from "./loading";
 
 export default function Home() {
@@ -34,14 +34,14 @@ export default function Home() {
       <main>
         <section className="relative w-full min-h-[700px] py-12 md:py-24 lg:py-32 flex items-center justify-center overflow-hidden">
           {/* Video Background */}
-          {/* <video
-            src="/videos/video-banner.mp4"
+          <video
+            src="https://files.edgestore.dev/h8r72zbd2e6038he/publicFiles/_public/892302fa-e976-4613-9fa0-3fb175af3c70.mp4"
             autoPlay
             loop
             muted
             playsInline
             className="absolute inset-0 w-full h-full object-cover z-0"
-          /> */}
+          />
           {/* Optional overlay for readability */}
           <div className="absolute inset-0 bg-black/50 z-10" />
           {/* Hero Content */}
@@ -59,6 +59,7 @@ export default function Home() {
                   Explore Products <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
+              
               <Button
                 variant="secondary"
                 size="lg"
@@ -303,7 +304,7 @@ export default function Home() {
                   What Our Customers Say
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Don't just take our word for it. Hear from professionals who
+                  Don&apos;t just take our word for it. Hear from professionals who
                   have transformed their workspaces.
                 </p>
               </div>
@@ -333,9 +334,9 @@ export default function Home() {
                       ))}
                     </div>
                     <p className="text-muted-foreground">
-                      "Salamat po ulit maam sa stand palangasasabe kona sulit
-                      ang binili ko sa quality 😊" "Welcome po maam sobrang
-                      ganda pooo ❤️"
+                      &quot;Salamat po ulit maam sa stand palangasasabe kona sulit
+                      ang binili ko sa quality 😊&quot; &quot;Welcome po maam sobrang
+                      ganda pooo ❤️&quot;
                     </p>
                   </div>
                 </CardContent>
@@ -364,9 +365,9 @@ export default function Home() {
                       ))}
                     </div>
                     <p className="text-muted-foreground">
-                      "The build quality of my Mesza Desk is exceptional. The
+                      &quot;The build quality of my Mesza Desk is exceptional. The
                       spacious surface and smooth height adjustment make it
-                      perfect for my design work."
+                      perfect for my design work.&quot;
                     </p>
                   </div>
                 </CardContent>

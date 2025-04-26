@@ -29,10 +29,11 @@ export function MultiFileDropzoneUsage() {
     <UploaderProvider uploadFn={uploadFn} autoUpload>
       <FileUploader
         maxFiles={5}
-        maxSize={1024 * 1024 * 1} // 1 MB
+        maxSize={1024 * 1024 * 70} // 1 MB
         accept={{
           "application/pdf": [],
           "text/plain": [".txt"],
+          "video/mp4": [".mp4"],
         }}
       />
     </UploaderProvider>

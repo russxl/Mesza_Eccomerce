@@ -15,24 +15,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useProductStore, useFilteredProducts } from "@/store/productStore";
-import { useEffect } from "react";
 
 export default function ProductsPage() {
-  const { setSearchTerm, filters, setSorting } = useProductStore();
+  const { filters, setSorting } = useProductStore();
 
   // Get filtered products using the custom hook
   const { data: products = [], isLoading } = useFilteredProducts();
 
-  // Handlers
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleCategoryChange = (value: string) => {
-    // If you want to filter by category, you should add a setCategoryFilter to your store and use it here.
-    // For now, this is a placeholder.
-    // setCategoryFilter(value);
-  };
 
   const handleSortChange = (value: string) => {
     // Map UI sort values to store sort fields and order

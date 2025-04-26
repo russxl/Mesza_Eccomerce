@@ -86,7 +86,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="text-xl font-bold">Innovation</h3>
                 <p className="text-muted-foreground">
-                  We continuously push the boundaries of what's possible in desk
+                  We continuously push the boundaries of what&apos;s possible in desk
                   design, incorporating new technologies and features to enhance
                   the user experience.
                 </p>
@@ -113,7 +113,7 @@ export default function AboutPage() {
                 </div>
                 <h3 className="text-xl font-bold">Sustainability</h3>
                 <p className="text-muted-foreground">
-                  We're committed to environmentally responsible manufacturing
+                  We&apos;re committed to environmentally responsible manufacturing
                   practices, from sourcing sustainable materials to minimizing
                   waste in our production process.
                 </p>
@@ -188,7 +188,7 @@ export default function AboutPage() {
                   Join Our Team
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
-                  We're always looking for talented individuals who are
+                  We&apos;re always looking for talented individuals who are
                   passionate about creating exceptional products.
                 </p>
               </div>

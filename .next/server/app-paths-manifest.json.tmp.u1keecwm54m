@@ -1,4 +1,0 @@
-{
-  "/api/dashboard/products/[productId]/route": "app/api/dashboard/products/[productId]/route.js",
-  "/products/[slug]/page": "app/products/[slug]/page.js"
-}
