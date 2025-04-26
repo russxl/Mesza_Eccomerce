@@ -6,7 +6,6 @@ import { MessageCircle, MapPin, Facebook } from "lucide-react";
 import { FaFacebookMessenger } from "react-icons/fa";
 import {
   Card,
-  CardContent,
 } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 
@@ -58,7 +57,7 @@ export default function ContactPage() {
                     Get In Touch
                   </h2>
                   <p className="text-muted-foreground text-lg">
-                    We'd love to hear from you. Whether you have a question
+                    We&apos;d love to hear from you. Whether you have a question
                     about our products, need help with an order, or want to
                     discuss a custom solution, our team is ready to assist.
                   </p>

@@ -7,7 +7,7 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function GET(
   request: Request,
-  context: { params: { productId: string } }
+  context: { params: Promise<{ productId: string }> }
 ) {
   const { productId } = await context.params;
   try {
@@ -27,13 +27,13 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  context: { params: { productId: string } }
+  context: { params: Promise<{ productId: string }> }
 ) {
-  const { params } = await context;
+  const { productId } = await context.params;
   try {
     const body = await request.json();
     const product = await convex.mutation(api.product.updateProduct, {
-      productId: params.productId,
+      productId: productId,
       ...body,
     });
 
@@ -49,12 +49,12 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  context: { params: { productId: string } }
+  context: { params: Promise<{ productId: string }> }
 ) {
-  const { params } = await context;
+  const { productId } = await context.params;
   try {
     await convex.mutation(api.product.deleteProduct, {
-      productId: params.productId as Id<"products">,
+      productId: productId as Id<"products">,
     });
 
     return NextResponse.json({ success: true });

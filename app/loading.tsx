@@ -1,6 +1,5 @@
 "use client";
 
-import { ArrowRight, ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
