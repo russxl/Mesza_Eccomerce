@@ -1,35 +1,27 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { getAuth } from "@clerk/nextjs/server";
 
-const isProtectedRoute = createRouteMatcher([
-  "/account(.*)",
-  // Add other protected routes
-]);
-
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/sign-in(.*)",
-  "/api(.*)",
-  "/404(.*)",
-  "/not-found(.*)",
-]);
-
-export default clerkMiddleware(async (auth, req) => {
-  const { userId } = await auth();
-
-  // 1. Redirect logged-in users away from public pages
-  if (userId && isPublicRoute(req) && !req.nextUrl.pathname.startsWith("/api")) {
+export default async function middleware(req: NextRequest) {
+  const { userId } = await getAuth(req);
+  const path = req.nextUrl.pathname;
+  
+  // Redirect from public routes if logged in
+  if (userId && (
+    path === "/" || 
+    path.startsWith("/sign-in") || 
+    path.startsWith("/404") || 
+    path.startsWith("/not-found")
+  ) && !path.startsWith("/api")) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
-
-  // 2. Redirect unauthenticated users trying to access protected routes
-  if (!userId && isProtectedRoute(req)) {
+  
+  // Redirect from protected routes if not logged in
+  if (!userId && path.startsWith("/accounts")) {
     return NextResponse.redirect(new URL("/not-found", req.url));
   }
-
-  // 3. Allow other requests
+  
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: [
