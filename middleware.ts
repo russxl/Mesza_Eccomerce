@@ -1,22 +1,27 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getAuth } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export default async function middleware(req: NextRequest) {
-  const { userId } = await getAuth(req);
+  // Check for authentication using cookies instead of Clerk's functions
+  const authCookie = req.cookies.get("__session");
+  const isAuthenticated = !!authCookie?.value;
   const path = req.nextUrl.pathname;
   
-  // Redirect from public routes if logged in
-  if (userId && (
-    path === "/" || 
-    path.startsWith("/sign-in") || 
-    path.startsWith("/404") || 
-    path.startsWith("/not-found")
-  ) && !path.startsWith("/api")) {
+  // Public routes that redirect to dashboard if logged in
+  const publicRoutes = ["/", "/sign-in", "/404", "/not-found"];
+  const isPublicRoute = publicRoutes.some(route => 
+    path === route || (route !== "/" && path.startsWith(route))
+  );
+  
+  // Protected routes that require authentication
+  const isProtectedRoute = path.startsWith("/accounts");
+  
+  // Redirect logic
+  if (isAuthenticated && isPublicRoute && !path.startsWith("/api")) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
   
-  // Redirect from protected routes if not logged in
-  if (!userId && path.startsWith("/accounts")) {
+  if (!isAuthenticated && isProtectedRoute) {
     return NextResponse.redirect(new URL("/not-found", req.url));
   }
   
