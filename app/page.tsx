@@ -70,8 +70,8 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <section className="py-16 bg-muted md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+          <div className=" px-4 md:px-6">
             <div className="text-center space-y-4 mb-12">
               <h2 className="text-4xl font-bold tracking-tight">
                 Featured Products
