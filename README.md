@@ -1,4 +1,4 @@
-# Mesza E-commerce
+# Mesza E-commerce (https://mesza-web.vercel.app) 
 
 A modern e-commerce platform for premium standing desks, built with Next.js, TypeScript, and Tailwind CSS.
 
