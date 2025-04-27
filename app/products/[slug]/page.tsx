@@ -17,9 +17,8 @@ interface Specification {
 
 async function getProductById(slug: string) {
   const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ||
-    (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ||
-    "http://localhost:3000";
+    process.env.NEXT_PUBLIC_BASE_URL 
+    
   try {
     const response = await fetch(`${baseUrl}/api/dashboard/products/${slug}`, {
       cache: "no-store",
