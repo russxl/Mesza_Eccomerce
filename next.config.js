@@ -14,6 +14,8 @@ const nextConfig = {
       'picsum.photos'
     ],
   },
+  // For newer Next.js versions
+  serverExternalPackages: ["@clerk/backend"]
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;
