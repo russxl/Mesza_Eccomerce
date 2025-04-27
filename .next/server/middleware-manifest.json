@@ -3,16 +3,20 @@
   "middleware": {
     "/": {
       "files": [
-        "server/edge/chunks/_ca019702._.js",
+        "server/edge/chunks/_1499ebf2._.js",
+        "server/edge/chunks/d2e5f_@clerk_shared_dist_ba885e6a._.js",
+        "server/edge/chunks/215b7_@clerk_backend_dist_da65e1f2._.js",
+        "server/edge/chunks/23d6d_@clerk_nextjs_dist_esm_bba5431b._.js",
+        "server/edge/chunks/node_modules__pnpm_fac582cc._.js",
         "server/edge/chunks/[root-of-the-server]__de110ef0._.js",
-        "server/edge/chunks/edge-wrapper_2f70bd12.js"
+        "server/edge/chunks/edge-wrapper_818f2231.js"
       ],
       "name": "middleware",
       "page": "/",
       "matchers": [
         {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/((?!_next|.*\\..*).*))(\\\\.json)?[\\/#\\?]?$",
-          "originalSource": "/((?!_next|.*\\..*).*)"
+          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*))(\\\\.json)?[\\/#\\?]?$",
+          "originalSource": "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)"
         },
         {
           "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/(api|trpc))(.*)(\\\\.json)?[\\/#\\?]?$",
@@ -24,9 +28,9 @@
       "env": {
         "__NEXT_BUILD_ID": "development",
         "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "DpEZcwlWcEfAAoY+A9a2pX3vwShrQzlb/NqBgRkF3ls=",
-        "__NEXT_PREVIEW_MODE_ID": "95f2cef054a7c47537e82c221adce863",
-        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "41fb70617959af4d7571238b863ac3be7d4d5272e70ad64168ef599587159379",
-        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "23486b98345a5c94c252366afbf8653a8881b2c8c3a800e4a9839888cf030554"
+        "__NEXT_PREVIEW_MODE_ID": "eacb9aafe4b1e5386805b08bbed85b4b",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "f30018602310e2f7f934420147d174056942286eb31f1cbb7d9220284335c413",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "b012ce546ef16b999bc00d4725ea94073faab686c2dcf6f1745853ce8d1ce98d"
       }
     }
   },
