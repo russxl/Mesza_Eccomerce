@@ -20,6 +20,11 @@ public/videos/video-banner.mp4
 # next.js
 /.next/
 /out/
+*-manifest.json
+*-manifest.js
+*-build-manifest.*
+*-reference-manifest.*
+*-font-manifest.*
 
 # production
 /build
