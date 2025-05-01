@@ -91,7 +91,7 @@ export function SiteHeader() {
                     </Link>
                   ))}
                 </div>
-                {/* <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4">
                   <Link
                     href="/cart"
                     className="w-full"
@@ -101,7 +101,7 @@ export function SiteHeader() {
                       Cart (0)
                     </Button>
                   </Link>
-                </div> */}
+                </div>
               </nav>
             </SheetContent>
           </Sheet>
