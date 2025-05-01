@@ -25,6 +25,9 @@ public/videos/video-banner.mp4
 *-build-manifest.*
 *-reference-manifest.*
 *-font-manifest.*
+*-client-reference-manifest.*
+trace.*
+*.trace
 
 # production
 /build
