@@ -16,6 +16,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useFilteredProducts } from "@/store/productStore";
 import HomeSkeleton from "./loading";
+import { formatCurrencySigns } from "@/utils/formatToCurrency";
 
 export default function Home() {
   const { data: products = [], isLoading } = useFilteredProducts();
@@ -108,7 +109,7 @@ export default function Home() {
                     </CardContent>
                     <div className="px-6 pb-6 flex items-center justify-between">
                       <span className="text-2xl font-bold">
-                        ₱{product.price.toFixed(2)}
+                        {formatCurrencySigns(product.price)}
                       </span>
                       <Button asChild>
                         <Link href={`/products/${product._id}`}>

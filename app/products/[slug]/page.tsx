@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, Star } from "lucide-react";
@@ -12,8 +13,6 @@ interface Specification {
   key: string;
   value: string;
 }
-
-
 
 async function getProductById(slug: string) {
   const baseUrl =
@@ -39,6 +38,8 @@ export default async function ProductDetailPage({
   const { slug } = await params;
   const product = await getProductById(slug);
   if (!product) return notFound();
+  console.log({product});
+  
 
   return (
     <div className="flex min-h-[100dvh] flex-col">

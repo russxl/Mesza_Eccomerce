@@ -1,0 +1,68 @@
+"use client";
+
+import type React from "react";
+import { useFormContext } from "react-hook-form";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Shipping } from "@/schema/shipping-schema";
+
+export function ShippingMethod() {
+  const { control } = useFormContext<Shipping>();
+
+  return (
+    <div>
+      <h2 className="text-xl font-semibold mb-4">Shipping Method</h2>
+      <FormField
+        control={control}
+        name="shippingMethod"
+        render={({ field }) => (
+          <FormItem className="space-y-3">
+            <FormControl>
+              <RadioGroup
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                className="grid gap-4"
+              >
+                <div className="flex items-center justify-between rounded-lg border p-4">
+                  <div className="flex items-center gap-3">
+                    <RadioGroupItem value="standard" id="standard" />
+                    <Label htmlFor="standard" className="font-medium">
+                      Standard Shipping
+                    </Label>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-medium">Free</div>
+                    <div className="text-sm text-muted-foreground">
+                      5-7 business days
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between rounded-lg border p-4">
+                  <div className="flex items-center gap-3">
+                    <RadioGroupItem value="express" id="express" />
+                    <Label htmlFor="express" className="font-medium">
+                      Express Shipping
+                    </Label>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-medium">$25.00</div>
+                    <div className="text-sm text-muted-foreground">
+                      2-3 business days
+                    </div>
+                  </div>
+                </div>
+              </RadioGroup>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  );
+}

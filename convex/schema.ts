@@ -89,30 +89,41 @@ export default defineSchema({
   // Order history/activity log
 
   orderActivity: defineTable({
+    orderId: v.string(), // Unique order identifier
     status: v.string(), // Order status (pending, completed, etc.)
-    activityType: v.string(), // Type of activity (status change, note added, etc.)
-    orders: v.object({
-      productId: v.id("products"), // Reference to product
-      variationId: v.optional(v.array(v.id("productVariations"))), // Optional reference to variation
-      quantity: v.number(), // Quantity of item
-      price: v.number(), // Price of item
-      imageURL: v.optional(v.string()), // Product image URL
-    }),
-    message: v.string(), // Description of activity
+    cart: v.array(
+      v.object({
+        productId: v.string(),
+        name: v.string(),
+        price: v.number(),
+        quantity: v.number(),
+        image: v.optional(v.string()),
+        selectedOptions: v.optional(v.record(v.string(), v.string())),
+      })
+    ),
+    message: v.optional(v.string()), // Description of activity
     subTotal: v.number(), // Subtotal amount for the order
-    shipping: v.optional(v.id("shipping")), // Shipping address (if applicable)
-  }),
+    shippingId: v.optional(v.id("shipping")), // Reference to the shipping details document
+  }).index("by_order_id", ["orderId"]), // Add index for querying by orderId string
 
+  // Shipping details linked to an order
   shipping: defineTable({
-    orderId: v.id("orderActivity"), // Reference to cart
-    address: v.string(), // Shipping address
-    city: v.string(), // City
-    state: v.string(), // State
-    zipCode: v.string(), // Zip code
-    country: v.string(), // Country
-    shippingMethod: v.string(), // e.g., "Standard", "Express"
-    trackingNumber: v.optional(v.string()), // Optional tracking number
-  }).index("by_order", ["orderId"]),
+    orderId: v.string(), // The user-facing order ID string from orderActivity
+    firstName: v.string(),
+    lastName: v.string(),
+    email: v.string(),
+    phone: v.string(),
+    address: v.string(),
+    apartment: v.optional(v.string()),
+    city: v.string(),
+    state: v.string(),
+    zipCode: v.string(),
+    country: v.string(),
+    shippingMethod: v.string(), // "standard" or "express"
+    specialInstructions: v.optional(v.string()),
+    trackingNumber: v.optional(v.string()), // Added later by admin
+    createdAt: v.number(), // Timestamp when shipping details added
+  }).index("by_orderId", ["orderId"]), // Index for looking up shipping by orderId string
 
   // Site configuration and settings
   siteSettings: defineTable({

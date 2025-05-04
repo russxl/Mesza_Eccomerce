@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Star } from "lucide-react";
-
+import { Minus, Plus, ShoppingCart, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import useCartStore from "@/store/globalStore";
 interface VariationOption {
   value: string;
   price?: number;
@@ -36,7 +37,7 @@ export default function ProductActions({ product }: { product: Product }) {
   }>({});
   const [selectedPrice, setSelectedPrice] = useState(product.price);
 
-
+  const [quantity, setQuantity] = useState(1);
   // Update price when a variation is selected
   const handleOptionChange = (variationType: string, value: string) => {
     setSelectedOptions((prev) => {
@@ -61,6 +62,30 @@ export default function ProductActions({ product }: { product: Product }) {
       return updated;
     });
   };
+  const handleAddToCart = () => {
+    // First increment the cart counter in globalStore
+    useCartStore.getState().incrementByQuantity(quantity);
+    
+    // Create cart item
+    const cartItem = {
+      productId: product._id,
+      name: product.name,
+      price: selectedPrice,
+      image: product.imageURLs?.[0] || '',
+      quantity: quantity,
+      selectedOptions: selectedOptions,
+    };
+    
+    // Add the item to local storage
+    const existingCart = localStorage.getItem('cart');
+    const cartItems = existingCart ? JSON.parse(existingCart) : [];
+    cartItems.push(cartItem);
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+    
+    // Visual feedback (optional)
+    alert(`Added ${quantity} ${product.name} to cart`);
+  };  
+
 
   return (
     <div className="space-y-8">
@@ -111,7 +136,7 @@ export default function ProductActions({ product }: { product: Product }) {
           </div>
         ))}
       {/* Quantity selector */}
-      {/* <div className="space-y-2">
+      <div className="space-y-2">
         <label htmlFor="quantity" className="text-sm font-medium leading-none">
           Quantity
         </label>
@@ -141,9 +166,9 @@ export default function ProductActions({ product }: { product: Product }) {
             <Plus className="h-4 w-4" />
           </button>
         </div>
-      </div> */}
+      </div>
       {/* Action buttons */}
-      {/* <div className="flex flex-col gap-4 sm:flex-row">
+      <div className="flex flex-col gap-4 sm:flex-row">
         <Button
           onClick={handleAddToCart}
           className="flex items-center justify-center gap-2"
@@ -151,7 +176,7 @@ export default function ProductActions({ product }: { product: Product }) {
           <ShoppingCart className="h-4 w-4" />
           Add to Cart
         </Button>
-      </div> */}
+      </div>
     </div>
   );
 }

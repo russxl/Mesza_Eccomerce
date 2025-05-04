@@ -61,13 +61,13 @@ export default function ProductsPage() {
                   Explore our complete range of premium standing desks and
                   accessories.
                 </p>
-                <input
+                {/* <input
                   type="text"
                   placeholder="Search products..."
                   className="mt-4 w-full max-w-md rounded-md border px-4 py-2 text-base"
                   value={filters.searchTerm}
                   onChange={handleSearchChange}
-                />
+                /> */}
               </div>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function ProductsPage() {
                   <Filter className="h-4 w-4" />
                   <span className="text-sm font-medium">Filter by:</span>
                 </div>
-                <Select
+                {/* <Select
                   // value={categoryFilter} // Uncomment and implement if you add category filtering
                   onValueChange={handleCategoryChange}
                 >
@@ -103,7 +103,7 @@ export default function ProductsPage() {
                     <SelectItem value="pro">Pro Series</SelectItem>
                     <SelectItem value="executive">Executive Series</SelectItem>
                   </SelectContent>
-                </Select>
+                </Select> */}
                 <Select
                   onValueChange={handleSortChange}
                   value={

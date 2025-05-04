@@ -17,7 +17,7 @@ import useCartStore from "@/store/globalStore";
 
 export function SiteHeader() {
   const [isOpen, setIsOpen] = useState(false);
-  useCartStore((state) => state.cartCount);
+  const cartCount = useCartStore((state) => state.cartCount);
 
   const navigationLinks = [
     { href: "/", label: "Home" },
@@ -58,11 +58,11 @@ export function SiteHeader() {
         {/* Right Side Actions */}
         <div className="flex items-center gap-4">
           <ModeToggle />
-          {/* <Link href="/cart" className="hidden md:block">
+          <Link href="/cart" className="hidden md:block">
             <Button variant="outline" size="sm">
-              Cart ({cartCount})
+              Cart ({cartCount})  
             </Button>
-          </Link> */}
+          </Link>
 
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>

@@ -11,11 +11,14 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import useCartStore from "@/store/globalStore";
 import { Cart } from "@/schema/shipping-schema";
-
+import { useOrderStore } from "@/store/orderStore";
+import { useRouter } from "next/navigation";
 export default function CartPage() {
   const [cart, setCart] = useState<Cart[]>([]);
-  const dispatch = useCartStore((state) => state.dispatch);
 
+  const dispatch = useCartStore((state) => state.dispatch);
+  const { createOrder } = useOrderStore();
+  const router = useRouter();
   useEffect(() => {
     const stored = localStorage.getItem("cart");
     const items = stored ? JSON.parse(stored) : [];
@@ -25,10 +28,13 @@ export default function CartPage() {
       JSON.stringify(
         Object.keys(opts || {})
           .sort()
-          .reduce((acc, key) => {
-            acc[key] = opts![key];
-            return acc;
-          }, {} as Record<string, string>)
+          .reduce(
+            (acc, key) => {
+              acc[key] = opts![key];
+              return acc;
+            },
+            {} as Record<string, string>
+          )
       );
     items.forEach((item: Cart) => {
       const existing = deduped.find(
@@ -102,6 +108,16 @@ export default function CartPage() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+
+  const handleCheckout = async () => {
+    try {
+      const data = await createOrder(cart, subtotal);
+      handleClearCart();
+      router.push(`/shipping/${data.orderId}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="flex min-h-[100dvh] flex-col">
@@ -250,10 +266,7 @@ export default function CartPage() {
                       className="w-full"
                       size="lg"
                       disabled={cart.length === 0}
-                      onClick={() => {
-                        // Handle checkout logic here
-                        alert("Proceeding to checkout...");
-                      }}
+                      onClick={handleCheckout}
                     >
                       Proceed to Checkout
                     </Button>
