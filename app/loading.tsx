@@ -23,7 +23,7 @@ export default function HomeSkeleton() {
 
         {/* Featured Products Skeleton */}
         <section className="py-16 bg-muted md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className=" px-4 md:px-6">
             <div className="text-center space-y-4 mb-12">
               <div className="h-10 w-1/4 bg-gray-300 rounded mx-auto"></div>
               <div className="h-6 w-1/3 bg-gray-300 rounded mx-auto"></div>

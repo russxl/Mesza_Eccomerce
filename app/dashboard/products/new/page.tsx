@@ -30,11 +30,7 @@ import { useToast } from "@/components/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 
 // Import product schema and store
-import {
-  ProductData,
-  ProductSchema,
-  VariationOption,
-} from "@/schema/product";
+import { ProductData, ProductSchema, VariationOption } from "@/schema/product";
 import { useProductStore } from "@/store/productStore";
 import { MultiImageDropzoneUsage } from "@/components/multiImageUpload";
 import { Plus as PlusIcon, Trash2 as TrashIcon } from "lucide-react";
@@ -48,7 +44,7 @@ interface FormVariation {
     value: string;
     price?: number;
     stockCount: number;
-    isActive?: boolean;
+    isActive: boolean; // Default to true
     imageURL?: string;
   }[];
 }
@@ -68,7 +64,7 @@ export default function NewProductPage() {
   // Use product store
   const { product, setProduct, resetProduct, createProduct } =
     useProductStore();
-  
+
   // Initialize the form with product from store or default
   const form = useForm<ProductFormData>({
     resolver: zodResolver(ProductSchema.omit({ variations: true })),
@@ -119,9 +115,13 @@ export default function NewProductPage() {
             value: option.value,
             price: option.price,
             stockCount: option.stockCount,
+            isActive: option.isActive, // Pass isActive
+            imageURL: option.imageURL, // Pass imageURL
           })),
-          isActive: filteredOptions.every((opt) => opt.isActive !== false),
-          imageURL: filteredOptions[0]?.imageURL,
+          isActive: variation.options.some((opt) => opt.isActive), // Variation type is active if any of its options are
+          imageURL:
+            variation.options.find((opt) => opt.imageURL)?.imageURL ||
+            variation.options[0]?.imageURL, // Use first available image for the type
         };
       })
       .filter(
@@ -177,7 +177,6 @@ export default function NewProductPage() {
     }
   };
 
-
   const addCategory = () => {
     const currentCategories = form.getValues("categories");
     form.setValue("categories", [...currentCategories, ""]);
@@ -215,7 +214,7 @@ export default function NewProductPage() {
       ...formVariations,
       {
         type,
-        options: [{ value: "", stockCount: 0 }],
+        options: [{ value: "", stockCount: 0, isActive: true, imageURL: "" }],
       },
     ]);
 
@@ -233,6 +232,8 @@ export default function NewProductPage() {
     updatedVariations[variationIndex].options.push({
       value: "",
       stockCount: 0,
+      isActive: true,
+      imageURL: "",
     });
 
     setFormVariations(updatedVariations);
@@ -648,61 +649,43 @@ export default function NewProductPage() {
                         {variation.options.map((option, optionIndex) => (
                           <div
                             key={optionIndex}
-                            className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end"
+                            className="p-3 border rounded-md space-y-3"
                           >
-                            <div className="flex-1">
-                              <FormLabel
-                                className={
-                                  optionIndex !== 0 ? "sr-only" : undefined
-                                }
-                              >
-                                Option Value
-                              </FormLabel>
-                              <Input
-                                placeholder={`Enter ${variation.type}`}
-                                value={option.value}
-                                onChange={(e) =>
-                                  updateVariationOption(
-                                    variationIndex,
-                                    optionIndex,
-                                    "value",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </div>
-                            <div className="flex-1">
-                              <FormLabel
-                                className={
-                                  optionIndex !== 0 ? "sr-only" : undefined
-                                }
-                              >
-                                Price Adjustment ($)
-                              </FormLabel>
-                              <Input
-                                type="number"
-                                step="0.01"
-                                placeholder="0.00"
-                                value={option.price ?? 0}
-                                onChange={(e) =>
-                                  updateVariationOption(
-                                    variationIndex,
-                                    optionIndex,
-                                    "price",
-                                    parseFloat(e.target.value) || 0
-                                  )
-                                }
-                              />
-                            </div>
-                            <div className="flex gap-2">
-                              <div className="flex-1">
-                                <FormLabel
-                                  className={
-                                    optionIndex !== 0 ? "sr-only" : undefined
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
+                              <div>
+                                <FormLabel>Option Value</FormLabel>
+                                <Input
+                                  placeholder={`Enter ${variation.type}`}
+                                  value={option.value}
+                                  onChange={(e) =>
+                                    updateVariationOption(
+                                      variationIndex,
+                                      optionIndex,
+                                      "value",
+                                      e.target.value
+                                    )
                                   }
-                                >
-                                  Stock
-                                </FormLabel>
+                                />
+                              </div>
+                              <div>
+                                <FormLabel>Price Adjustment ($)</FormLabel>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  placeholder="0.00"
+                                  value={option.price ?? 0}
+                                  onChange={(e) =>
+                                    updateVariationOption(
+                                      variationIndex,
+                                      optionIndex,
+                                      "price",
+                                      parseFloat(e.target.value) || 0
+                                    )
+                                  }
+                                />
+                              </div>
+                              <div>
+                                <FormLabel>Stock Count</FormLabel>
                                 <Input
                                   type="number"
                                   min="0"
@@ -719,11 +702,45 @@ export default function NewProductPage() {
                                   }
                                 />
                               </div>
+                              <div>
+                                <FormLabel>Image URL (Optional)</FormLabel>
+                                <Input
+                                  placeholder="https://example.com/image.png"
+                                  value={option.imageURL ?? ""}
+                                  onChange={(e) =>
+                                    updateVariationOption(
+                                      variationIndex,
+                                      optionIndex,
+                                      "imageURL",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <FormItem className="flex flex-row items-center space-x-2">
+                                <FormControl>
+                                  <Switch
+                                    checked={option.isActive}
+                                    onCheckedChange={(checked) =>
+                                      updateVariationOption(
+                                        variationIndex,
+                                        optionIndex,
+                                        "isActive",
+                                        checked
+                                      )
+                                    }
+                                  />
+                                </FormControl>
+                                <FormLabel className="text-sm font-normal">
+                                  Option Active
+                                </FormLabel>
+                              </FormItem>
                               <Button
                                 type="button"
                                 variant="outline"
                                 size="icon"
-                                className="self-end"
                                 onClick={() =>
                                   removeVariationOption(
                                     variationIndex,

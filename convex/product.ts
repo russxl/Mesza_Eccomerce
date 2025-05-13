@@ -31,6 +31,8 @@ export const createProduct = mutation({
                 value: v.string(),
                 price: v.optional(v.number()),
                 stockCount: v.number(),
+                isActive: v.optional(v.boolean()), // << ADDED for option
+                imageURL: v.optional(v.string()), // << ADDED for option
               })
             ),
             isActive: v.boolean(),
@@ -78,9 +80,16 @@ export const createProduct = mutation({
           // New variation object: insert and collect its ID
           const newVarId = await ctx.db.insert("productVariations", {
             type: variation.type,
-            options: variation.options, // Store the array of option objects directly
-            isActive: variation.isActive,
-            imageURL: variation.imageURL,
+            // Ensure options include imageURL and isActive if provided
+            options: variation.options.map((opt) => ({
+              value: opt.value,
+              price: opt.price,
+              stockCount: opt.stockCount,
+              isActive: opt.isActive === undefined ? true : opt.isActive, // Default to true if not provided
+              imageURL: opt.imageURL,
+            })),
+            isActive: variation.isActive, // For the variation type itself
+            imageURL: variation.imageURL, // For the variation type itself
           });
 
           variationIds.push(newVarId);
@@ -99,9 +108,10 @@ export const createProduct = mutation({
       }
     }
 
-    // Update the product with the variation IDs
+    // Update the product with the variation IDs and specification IDs
     await ctx.db.patch(productId, {
       variationId: variationIds,
+      specificationId: specifications, // Add this line
       updatedAt: Date.now(),
     });
 
@@ -119,11 +129,46 @@ export const updateProduct = mutation({
     stockCount: v.optional(v.number()),
     categories: v.optional(v.array(v.string())),
     isActive: v.optional(v.boolean()),
+    variations: v.optional(
+      v.array(
+        // Similar to createProduct, variations can be new objects
+        // For updates, we might also want to handle IDs of existing variations if we were doing partial updates,
+        // but for simplicity now, we'll treat them like new ones after clearing old ones.
+        v.object({
+          id: v.optional(v.id("productVariations")), // ID of existing variation (if client sends it)
+          type: v.string(),
+          options: v.array(
+            v.object({
+              id: v.optional(v.string()), // ID of existing option
+              value: v.string(),
+              price: v.optional(v.number()),
+              stockCount: v.number(),
+              isActive: v.optional(v.boolean()),
+              imageURL: v.optional(v.string()),
+            })
+          ),
+          isActive: v.boolean(),
+          imageURL: v.optional(v.string()),
+        })
+      )
+    ),
+    specifications: v.optional(
+      v.array(
+        v.object({
+          // id: v.optional(v.id("specifications")), // ID of existing specification
+          key: v.string(),
+          value: v.string(),
+        })
+      )
+    ),
   },
   handler: async (ctx, args) => {
-    // Verify admin is authenticated
-
-    const { productId, ...fieldsToUpdate } = args;
+    const {
+      productId,
+      variations: newVariationsData,
+      specifications: newSpecificationsData,
+      ...productFieldsToUpdate
+    } = args;
 
     // Get existing product
     const product = await ctx.db.get(productId);
@@ -131,11 +176,83 @@ export const updateProduct = mutation({
       throw new Error("Product not found");
     }
 
-    // Update the product with new values
-    return ctx.db.patch(productId, {
-      ...fieldsToUpdate,
+    if (product.specificationId && product.specificationId.length > 0) {
+      for (const specId of product.specificationId) {
+        try {
+          await ctx.db.delete(specId as Id<"specifications">);
+        } catch (e) {
+          console.warn(`Failed to delete old specification ${specId}:`, e);
+        }
+      }
+    }
+    await ctx.db.patch(productId, { specificationId: [] });
+    // No need to patch product.specificationId to [] here, as we'll set it with new IDs later.
+
+    // 2. Delete old variations associated with the product
+    // (Assuming variationId on product document is the source of truth for existing variations)
+    if (product.variationId && product.variationId.length > 0) {
+      for (const varId of product.variationId) {
+        try {
+          await ctx.db.delete(varId as Id<"productVariations">);
+        } catch (e) {
+          console.warn(`Failed to delete old variation ${varId}:`, e);
+        }
+      }
+    }
+    await ctx.db.patch(productId, { variationId: [] }); // Clear the array in product
+
+    // 3. Create new specifications
+    let newSpecificationIds: Id<"specifications">[] = [];
+    if (newSpecificationsData && newSpecificationsData.length > 0) {
+      for (const specData of newSpecificationsData) {
+        if (specData.key && specData.value) {
+          // Ensure key and value are present
+          const newSpecId = await ctx.db.insert("specifications", {
+            productId: productId,
+            specs: [specData], // Assuming 'specs' is an array field in 'specifications' table
+          });
+          newSpecificationIds.push(newSpecId);
+        }
+      }
+    }
+
+    // 4. Create new variations
+    let newVariationIds: Id<"productVariations">[] = [];
+    if (newVariationsData && newVariationsData.length > 0) {
+      for (const variationData of newVariationsData) {
+        // Filter out options with empty value before inserting
+        const filteredOptions = variationData.options.filter(
+          (option) => option.value && option.value.trim() !== ""
+        );
+
+        if (filteredOptions.length > 0) {
+          const newVarId = await ctx.db.insert("productVariations", {
+            // productId: productId, // If you want a direct link, add to schema
+            type: variationData.type,
+            options: filteredOptions.map((opt) => ({
+              value: opt.value,
+              price: opt.price,
+              stockCount: opt.stockCount,
+              isActive: opt.isActive === undefined ? true : opt.isActive, // Add isActive for option
+              imageURL: opt.imageURL, // Add imageURL for option
+            })),
+            isActive: variationData.isActive,
+            imageURL: variationData.imageURL,
+          });
+          newVariationIds.push(newVarId);
+        }
+      }
+    }
+
+    // 5. Update the product with new basic fields and new variation/specification IDs
+    await ctx.db.patch(productId, {
+      ...productFieldsToUpdate,
+      specificationId: newSpecificationIds,
+      variationId: newVariationIds,
       updatedAt: Date.now(),
     });
+
+    return productId; // Or return the updated product object
   },
 });
 

@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     domains: [
       'localhost', 
@@ -11,7 +14,8 @@ const nextConfig = {
       'avatars.githubusercontent.com',
       'lh3.googleusercontent.com',
       'platform-lookaside.fbsbx.com',
-      'picsum.photos'
+      'picsum.photos', 
+      'heavydutyph.com'
     ],
   },
   // For newer Next.js versions

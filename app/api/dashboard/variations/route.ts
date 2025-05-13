@@ -6,7 +6,6 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function GET() {
   try {
-    console.log("Fetching variations..."); // Debug log
     const variations = await convex.query(api.variations.getAllProductVariations, {
     });
     

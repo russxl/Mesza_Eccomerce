@@ -3,7 +3,7 @@
 // This is a simplified version of the use-toast hook
 // In a real application, you would use a proper toast library
 
-import { useState } from "react"
+import React, { createContext, useContext, useState, ReactNode } from "react"
 
 type ToastVariant = "default" | "destructive" | "success"
 
@@ -20,7 +20,15 @@ interface ToastOptions {
   variant?: ToastVariant
 }
 
-export function useToast() {
+interface ToastContextType {
+  toast: (options: ToastOptions) => string
+  dismiss: (id: string) => void
+  toasts: Toast[]
+}
+
+const ToastContext = createContext<ToastContextType | undefined>(undefined)
+
+export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([])
 
   const toast = ({ title, description, variant = "default" }: ToastOptions) => {
@@ -41,9 +49,19 @@ export function useToast() {
     setToasts((prevToasts) => prevToasts.filter((t) => t.id !== id))
   }
 
-  return {
-    toast,
-    dismiss,
-    toasts,
+  return (
+    <ToastContext.Provider value={{ toasts, toast, dismiss }}>
+      {children}
+    </ToastContext.Provider>
+  )
+}
+
+export function useToast() {
+  const context = useContext(ToastContext)
+  
+  if (!context) {
+    throw new Error("useToast must be used within a ToastProvider")
   }
+  
+  return context
 }

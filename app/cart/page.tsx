@@ -11,40 +11,57 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import useCartStore from "@/store/globalStore";
 import { Cart } from "@/schema/shipping-schema";
+import { useOrderStore } from "@/store/orderStore";
+import { useRouter } from "next/navigation";
+import CartLoading from "./loading";
+import { formatCurrencySigns } from "@/utils/formatToCurrency";
 
 export default function CartPage() {
   const [cart, setCart] = useState<Cart[]>([]);
+  const decrementByQuantity = useCartStore((state) => state.decrementByQuantity);
   const dispatch = useCartStore((state) => state.dispatch);
+  const { createOrder } = useOrderStore();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("cart");
-    const items = stored ? JSON.parse(stored) : [];
-    // Deduplicate: combine quantities for same productId and selectedOptions (order-insensitive)
-    const deduped: Cart[] = [];
-    const serializeOptions = (opts: Record<string, string> | undefined) =>
-      JSON.stringify(
-        Object.keys(opts || {})
-          .sort()
-          .reduce((acc, key) => {
-            acc[key] = opts![key];
-            return acc;
-          }, {} as Record<string, string>)
-      );
-    items.forEach((item: Cart) => {
-      const existing = deduped.find(
-        (d) =>
-          d.productId === item.productId &&
-          serializeOptions(d.selectedOptions) ===
-            serializeOptions(item.selectedOptions)
-      );
-      if (existing) {
-        existing.quantity += item.quantity;
-      } else {
-        deduped.push({ ...item });
-      }
-    });
-    setCart(deduped);
-    localStorage.setItem("cart", JSON.stringify(deduped));
+    setIsLoading(true);
+    try {
+      const stored = localStorage.getItem("cart");
+      const items = stored ? JSON.parse(stored) : [];
+      // Deduplicate: combine quantities for same productId and selectedOptions (order-insensitive)
+      const deduped: Cart[] = [];
+      const serializeOptions = (opts: Record<string, string> | undefined) =>
+        JSON.stringify(
+          Object.keys(opts || {})
+            .sort()
+            .reduce(
+              (acc, key) => {
+                acc[key] = opts![key];
+                return acc;
+              },
+              {} as Record<string, string>
+            )
+        );
+      items.forEach((item: Cart) => {
+        const existing = deduped.find(
+          (d) =>
+            d.productId === item.productId &&
+            serializeOptions(d.selectedOptions) ===
+              serializeOptions(item.selectedOptions)
+        );
+        if (existing) {
+          existing.quantity += item.quantity;
+        } else {
+          deduped.push({ ...item });
+        }
+      });
+      setCart(deduped);
+      localStorage.setItem("cart", JSON.stringify(deduped));
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   // Separate increase and decrease functions
@@ -85,9 +102,12 @@ export default function CartPage() {
     localStorage.setItem("cart", JSON.stringify(updated));
   };
 
-  const handleRemove = (idx: number) => {
+  const handleRemove = (idx: number, quantity?: number) => {
     const updated = cart.filter((_, i) => i !== idx);
     dispatch({ type: "decrement" });
+    if (quantity) {
+      decrementByQuantity(quantity);
+    }
     setCart(updated);
     localStorage.setItem("cart", JSON.stringify(updated));
   };
@@ -102,6 +122,27 @@ export default function CartPage() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+
+  const handleCheckout = async () => {
+    setIsSubmitting(true);
+    try {
+      const orderId = await createOrder(cart, subtotal);
+      if (orderId) {
+        handleClearCart();
+        router.push(`/shipping/${orderId}`);
+      } else {
+        console.error("Order creation failed.");
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+      setIsSubmitting(false);
+    }
+  };
+
+  // Return null during loading to let Next.js use the loading.tsx component
+  if (isLoading) {
+    return <CartLoading />;
+  }
 
   return (
     <div className="flex min-h-[100dvh] flex-col">
@@ -161,7 +202,9 @@ export default function CartPage() {
                         </div>
                       </div>
                       <div className="flex items-center">
-                        <span className="font-medium">${item.price}</span>
+                        <span className="font-medium">
+                          {formatCurrencySigns(item.price)}
+                        </span>
                       </div>
                       <div className="flex items-center">
                         <div className="flex items-center">
@@ -194,7 +237,7 @@ export default function CartPage() {
                       <div className="flex items-center">
                         <button
                           className="ml-2 text-muted-foreground hover:text-destructive"
-                          onClick={() => handleRemove(idx)}
+                          onClick={() => handleRemove(idx, item.quantity)}
                         >
                           <Trash2 className="h-4 w-4" />
                           <span className="sr-only">Remove item</span>
@@ -228,20 +271,20 @@ export default function CartPage() {
                     <div className="space-y-3">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Subtotal</span>
-                        <span>${subtotal.toFixed(2)}</span>
+                        <span>{formatCurrencySigns(subtotal)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Shipping</span>
-                        <span>Free</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Tax</span>
-                        <span>${(subtotal * 0.1).toFixed(2)}</span>
+                        <span >
+                          -
+                        </span>
                       </div>
                       <Separator />
                       <div className="flex justify-between font-medium">
                         <span>Total</span>
-                        <span>${(subtotal * 1.1).toFixed(2)}</span>
+                        <span>
+                          {formatCurrencySigns(subtotal )}
+                        </span>
                       </div>
                     </div>
                   </CardContent>
@@ -249,13 +292,17 @@ export default function CartPage() {
                     <Button
                       className="w-full"
                       size="lg"
-                      disabled={cart.length === 0}
-                      onClick={() => {
-                        // Handle checkout logic here
-                        alert("Proceeding to checkout...");
-                      }}
+                      disabled={cart.length === 0 || isSubmitting}
+                      onClick={handleCheckout}
                     >
-                      Proceed to Checkout
+                      {isSubmitting ? (
+                        <div className="flex items-center gap-2">
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                          Processing...
+                        </div>
+                      ) : (
+                        "Proceed to Checkout"
+                      )}
                     </Button>
                   </CardFooter>
                 </Card>

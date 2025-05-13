@@ -19,7 +19,6 @@ export function MultiFileDropzoneUsage() {
       });
       // you can run some server action or api here
       // to add the necessary data to your database
-      console.log(res);
       return res;
     },
     [edgestore]

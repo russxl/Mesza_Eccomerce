@@ -15,12 +15,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useProductStore, useFilteredProducts } from "@/store/productStore";
+import ProductsLoading from "./loading";
+import { formatCurrencySigns } from "@/utils/formatToCurrency";
+import { notFound } from "next/navigation";
 
 export default function ProductsPage() {
   const { filters, setSorting } = useProductStore();
 
   // Get filtered products using the custom hook
-  const { data: products = [], isLoading } = useFilteredProducts();
+  const { data: products = [], isLoading, error } = useFilteredProducts();
+  
+ 
+
+
 
 
   const handleSortChange = (value: string) => {
@@ -41,7 +48,12 @@ export default function ProductsPage() {
         break;
     }
   };
-
+if(isLoading){  
+  return <ProductsLoading />
+}
+if(error){
+  return notFound();
+}
   return (
     <div className="flex min-h-[100dvh] flex-col">
       <SiteHeader />
@@ -129,9 +141,7 @@ export default function ProductsPage() {
               </div>
             </div>
 
-            {isLoading ? (
-              <div className="text-center py-12">Loading products...</div>
-            ) : (
+            
               <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {products.map((product) => (
                   <Card className="overflow-hidden" key={product._id}>
@@ -154,7 +164,7 @@ export default function ProductsPage() {
                         </p>
                         <div className="flex items-center justify-between pt-2">
                           <span className="font-bold">
-                            ₱{product.price.toFixed(2)}
+                            {formatCurrencySigns(product.price)}
                           </span>
                           <Button asChild size="sm">
                             <Link href={`/products/${product._id}`}>
@@ -167,7 +177,7 @@ export default function ProductsPage() {
                   </Card>
                 ))}
               </div>
-            )}
+          
           </div>
         </section>
       </main>

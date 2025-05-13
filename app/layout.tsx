@@ -5,6 +5,8 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Providers } from "./provider";
 import { EdgeStoreProvider } from "@/lib/edgestore";
+import { Toaster } from "@/components/ui/toaster";
+import { ToastProvider } from "@/components/hooks/use-toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -34,7 +36,10 @@ export default function RootLayout({
                 enableSystem
                 disableTransitionOnChange
               >
-                {children}
+                <ToastProvider>
+                  {children}
+                  <Toaster />
+                </ToastProvider>
               </ThemeProvider>
             </Providers>
           </body>
