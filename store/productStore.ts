@@ -130,7 +130,7 @@ export const useProductStore = create<ProductState & Store>((set, get) => ({
   },
 
   fetchProductById: async (id) => {
-    const res = await fetch(`/api/dashboard/products/${id}`, {
+    const res = await fetch(`/api/products/${id}`, {
       headers: { Accept: "application/json" },
       cache: "no-store",
     });

@@ -4,10 +4,9 @@ import { v } from "convex/values";
 import { requireAdmin } from "./auth";
 
 // Admin Cart/Order Mutations
-function generateOrderId(prefix = "ORD") {
-  const timestamp = Date.now(); // current time in milliseconds
-  const randomNum = Math.floor(Math.random() * 1000000); // random number
-  return `${prefix}-${timestamp}-${randomNum}`;
+function generateOrderId(prefix = "MESZA") {
+  const randomNum = Math.floor(Math.random() * 1000000000); // random number
+  return `${prefix}-${randomNum}`;
 }
 export const createOrder = mutation({
   args: {
@@ -30,6 +29,8 @@ export const createOrder = mutation({
       orderId,
       status: "pending",
       ...args,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
     });
     return orderId;
   },
@@ -40,7 +41,6 @@ export const getOrder = query({
     orderId: v.string(),
   },
   handler: async (ctx, args) => {
-    console.log("Convex: Fetching order with ID:", args.orderId);
     const order = await ctx.db
       .query("orderActivity")
       .filter((q) => q.eq(q.field("orderId"), args.orderId))
@@ -98,7 +98,6 @@ export const addShippingDetails = mutation({
     // 3. Update the orderActivity document with the shippingId and new status
     await ctx.db.patch(orderActivity._id, {
       shippingId: shippingId,
-      status: "processing", // Update status to indicate shipping is added
       message: "Shipping details added.", // Optional message update
     });
 
@@ -106,43 +105,113 @@ export const addShippingDetails = mutation({
   },
 });
 
-// export const updateOrderStatus = mutation({
-//   args: {
-//     orderId: v.string(),
-//     status: v.string(),
-//     notes: v.optional(v.string()),
-//   },
-//   handler: async (ctx, args) => {
-//     // Verify admin is authenticated
-//     const admin = await requireAdmin(ctx);
+export const getOrderSummaryById = query({
+  args: {
+    orderId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    try {
+      // Get the order
+      const clientOrder = await ctx.db
+        .query("orderActivity")
+        .withIndex("by_order_id", (q) => q.eq("orderId", args.orderId))
+        .first();
 
-//     // Get the order
-//     const order = await ctx.db
-//       .query("orderActivity")
-//       .withIndex("by_order_id", (q) => q.eq("orderId", args.orderId))
-//       .first();
+      if (!clientOrder) {
+        return null;
+      }
+      // Get the shipping information if it exists
+      let shipping = null;
+      if (clientOrder.shippingId) {
+        shipping = await ctx.db.get(clientOrder.shippingId);
+      }
 
-//     if (!order) {
-//       throw new Error("Order not found");
-//     }
+      const order = {
+        ...clientOrder,
+        shipping,
+      };
+      return order;
+    } catch {
+      return null;
+    }
+  },
+});
 
-//     // Update cart status
-//     await ctx.db.patch(cart._id, {
-//       status: args.status,
-//       updatedAt: Date.now(),
-//       processedBy: admin._id,
-//       adminNotes: args.notes || cart.adminNotes,
-//     });
+export const updateOrderStatusAndTracking = mutation({
+  args: {
+    orderId: v.string(), // The user-facing order ID
+    status: v.optional(v.string()),
+    message: v.optional(v.string()),
+    trackingNumber: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    // Ensure admin privileges if necessary (using requireAdmin or similar)
+    // await requireAdmin(ctx); // Example: Uncomment and implement if auth is needed
 
-//     // Log the activity
-//     await ctx.db.insert("orderActivity", {
-//       cartId: args.cartId,
-//       timestamp: Date.now(),
-//       activityType: "status_update",
-//       message: `Order status updated to "${args.status}"`,
-//       performedBy: admin._id,
-//     });
+    const { orderId, status, message, trackingNumber } = args;
 
-//     return { success: true };
-//   },
-// });
+    // 1. Find the orderActivity document
+    const orderActivity = await ctx.db
+      .query("orderActivity")
+      .withIndex("by_order_id", (q) => q.eq("orderId", orderId))
+      .first();
+
+    if (!orderActivity) {
+      throw new Error(`Order with ID ${orderId} not found.`);
+    }
+
+    // 2. Prepare updates for orderActivity
+    const orderActivityUpdates: { status?: string; message?: string; updatedAt?: number } = {};
+    if (status !== undefined) {
+      orderActivityUpdates.status = status;
+    }
+    if (message !== undefined) {
+      orderActivityUpdates.message = message;
+    }
+    
+    // Always update the updatedAt timestamp when changes are made
+    orderActivityUpdates.updatedAt = Date.now();
+
+    if (Object.keys(orderActivityUpdates).length > 0) {
+      await ctx.db.patch(orderActivity._id, orderActivityUpdates);
+    }
+
+    // 3. Update shipping tracking number if provided and shippingId exists
+    if (trackingNumber !== undefined && orderActivity.shippingId) {
+      const shippingDoc = await ctx.db.get(orderActivity.shippingId);
+      if (shippingDoc) {
+        await ctx.db.patch(orderActivity.shippingId, { trackingNumber });
+      } else {
+        // Optionally handle case where shippingId is present but document not found
+        console.warn(`Shipping document with ID ${orderActivity.shippingId} not found for order ${orderId}`);
+      }
+    } else if (trackingNumber !== undefined && !orderActivity.shippingId) {
+      // Optionally handle case where tracking number is provided but no shippingId
+      console.warn(`Tracking number provided for order ${orderId}, but no shippingId associated.`);
+    }
+
+    return { success: true, message: "Order updated successfully." };
+  },
+});
+
+export const getAllOrders = query({
+  handler: async (ctx) => {
+    const orders = await ctx.db.query("orderActivity").collect();
+    
+    // For each order, get shipping info if available
+    const ordersWithShipping = await Promise.all(
+      orders.map(async (order) => {
+        let shipping = null;
+        if (order.shippingId) {
+          shipping = await ctx.db.get(order.shippingId);
+        }
+        return {
+          ...order,
+          shipping,
+        };
+      })
+    );
+    
+    return ordersWithShipping;
+  },
+});

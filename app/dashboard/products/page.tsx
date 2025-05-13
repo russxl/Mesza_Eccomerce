@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/card";
 import { useProductStore, useFilteredProducts } from "@/store/productStore";
 import { useRouter } from "next/navigation";
+import { formatCurrencySigns } from "@/utils/formatToCurrency";
 
 export default function ProductsPage() {
   // Use Zustand store for actions and filters
@@ -138,6 +139,7 @@ export default function ProductsPage() {
     );
   }
 
+  
   return (
     <div className="p-6 md:p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -219,7 +221,9 @@ export default function ProductsPage() {
               {products.map((product) => (
                 <TableRow key={product._id}>
                   <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell>${product.price.toFixed(2)}</TableCell>
+                  <TableCell>
+                    {formatCurrencySigns(product.price)}
+                  </TableCell>
                   <TableCell>{product.stockCount}</TableCell>
                   <TableCell>
                     <Badge
@@ -235,7 +239,7 @@ export default function ProductsPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Link href={`/dashboard/products/${product._id}`}>
+                      <Link href={`/dashboard/products/edit/${product._id}`}>
                         <Button size="sm" variant="outline">
                           <Pencil className="h-4 w-4" />
                           <span className="sr-only">Edit</span>

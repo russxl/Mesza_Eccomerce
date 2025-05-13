@@ -98,7 +98,7 @@ export function SiteHeader() {
                     onClick={() => setIsOpen(false)}
                   >
                     <Button variant="outline" className="w-full">
-                      Cart (0)
+                      Cart ({cartCount})  
                     </Button>
                   </Link>
                 </div>

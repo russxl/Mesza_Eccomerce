@@ -53,11 +53,11 @@ export function ShippingAddress() {
       );
 
       if (selectedProvince?.id) {
-        setValue("city", ""); // Reset city selection
+        setValue("city", ""); // Reset city selection when province changes
         fetchCities(selectedProvince.id);
       }
     }
-  }, [selectedProvinceCode, shippingLocations, setValue, fetchCities]); // Added dependencies
+  }, [selectedProvinceCode, shippingLocations, setValue, fetchCities]);
 
   return (
     <div className="grid gap-4">
@@ -90,7 +90,7 @@ export function ShippingAddress() {
         )}
       />
 
-      <div className="flex gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
         <FormField
           control={control}
           name="state"
@@ -98,7 +98,10 @@ export function ShippingAddress() {
             <FormItem>
               <FormLabel>Province</FormLabel>
               <Select
-                onValueChange={field.onChange}
+                onValueChange={(value) => {
+                  // Make sure we're setting the code value to the form
+                  field.onChange(value);
+                }}
                 value={field.value}
                 disabled={loading}
               >
@@ -118,7 +121,7 @@ export function ShippingAddress() {
                     </SelectItem>
                   ) : (
                     shippingLocations?.map((province) => (
-                      <SelectItem key={province.id} value={province.code}>
+                      <SelectItem key={province.id} value={province.nativeName}>
                         {formatName(province.nativeName)}
                       </SelectItem>
                     ))
@@ -137,7 +140,10 @@ export function ShippingAddress() {
             <FormItem>
               <FormLabel>City/Municipality</FormLabel>
               <Select
-                onValueChange={field.onChange}
+                onValueChange={(value) => {
+                  // Make sure we're setting the code value to the form
+                  field.onChange(value);
+                }}
                 value={field.value}
                 disabled={!selectedProvinceCode || loading}
               >
@@ -157,7 +163,7 @@ export function ShippingAddress() {
                 <SelectContent>
                   {/* Added check for shippingCities before mapping */}
                   {shippingCities?.map((city) => (
-                    <SelectItem key={city.id} value={city.code}>
+                    <SelectItem key={city.id} value={city.nativeName}>
                       {formatName(city.nativeName)}
                     </SelectItem>
                   ))}

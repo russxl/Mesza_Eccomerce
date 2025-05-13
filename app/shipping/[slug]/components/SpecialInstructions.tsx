@@ -16,7 +16,7 @@ export function SpecialInstructions() {
   const { control } = useFormContext<Shipping>();
 
   return (
-    <div>
+    <div className="w-full">
       <h2 className="text-xl font-semibold mb-4">
         Special Instructions (Optional)
       </h2>
@@ -29,7 +29,7 @@ export function SpecialInstructions() {
             <FormControl>
               <Textarea
                 placeholder="Leave package at the front door, gate code: 1234, etc."
-                className="min-h-[100px]"
+                className="min-h-[100px] w-full"
                 {...field}
               />
             </FormControl>

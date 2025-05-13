@@ -28,10 +28,12 @@ export default defineSchema({
         value: v.string(), // e.g., "Small", "Red"
         price: v.optional(v.number()), // Optional variation-specific price
         stockCount: v.number(),
+        isActive: v.optional(v.boolean()), // << NEW: For individual option active status
+        imageURL: v.optional(v.string()), // << NEW: For individual option image
       })
-    ), // Variation-specific inventory
-    isActive: v.boolean(), // Variation availability
-    imageURL: v.optional(v.string()), // Optional variation-specific image
+    ),
+    isActive: v.boolean(), // Variation type availability (e.g., is "Color" variation active?)
+    imageURL: v.optional(v.string()), // Optional image for the variation type itself (e.g., a general image for "Color")
   }),
   reviews: defineTable({
     productId: v.id("products"), // Reference to product
@@ -104,6 +106,8 @@ export default defineSchema({
     message: v.optional(v.string()), // Description of activity
     subTotal: v.number(), // Subtotal amount for the order
     shippingId: v.optional(v.id("shipping")), // Reference to the shipping details document
+    createdAt: v.optional(v.number()), // Timestamp for order creation
+    updatedAt: v.optional(v.number()), // Timestamp for last order update
   }).index("by_order_id", ["orderId"]), // Add index for querying by orderId string
 
   // Shipping details linked to an order
@@ -132,4 +136,6 @@ export default defineSchema({
     updatedBy: v.id("users"), // Admin who last updated
     updatedAt: v.number(), // Last updated timestamp
   }).index("by_key", ["key"]),
+
+  // Added a comment to potentially help trigger Convex regeneration 2025-05-10
 });

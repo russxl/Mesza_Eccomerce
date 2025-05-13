@@ -4,27 +4,22 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { Cart, Shipping } from "@/schema/shipping-schema";
+import { Shipping } from "@/schema/shipping-schema"; // Keep Shipping for form context type
 import { formatCurrency } from "@/utils/formatToCurrency";
 import { useFormContext } from "react-hook-form";
-import { useOrderStore } from "@/store/orderStore";
-
-interface OrderData {
-  _id: string;
-  cart: Cart[];
-  subTotal: number;
-}
+import { useOrderStore, OrderWithShipping } from "@/store/orderStore"; // Import the new type
 
 export function OrderSummary() {
   const { getOrderById } = useOrderStore();
   const { slug } = useParams();
-  const [order, setOrder] = useState<OrderData | null>(null);
+  const [order, setOrder] = useState<OrderWithShipping | null>(null); // Use OrderWithShipping
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [shippingCost, setShippingCost] = useState(3500); // Default shipping cost
+  // Keep dynamic shipping cost calculation based on form for checkout process
+  const [calculatedShippingCost, setCalculatedShippingCost] = useState(0);
 
   // Try to get form context, but don't error if it doesn't exist
-  const formContext = useFormContext<Shipping>();
+  const formContext = useFormContext<Shipping>(); // Form context uses the Shipping schema for form fields
 
   // Watch for province and shipping method changes if form context exists
   useEffect(() => {
@@ -45,10 +40,11 @@ export function OrderSummary() {
           const isMetroManila = metroManilaProvinces.includes(province || "");
           const isRizal = province === "RIZAL";
 
+          // Update the calculated shipping cost based on form selections
           if (isMetroManila || isRizal) {
-            setShippingCost(999 + expressShippingCost);
+            setCalculatedShippingCost(999 + expressShippingCost);
           } else {
-            setShippingCost(3500 + expressShippingCost);
+            setCalculatedShippingCost(3500 + expressShippingCost);
           }
         }
       });
@@ -63,9 +59,14 @@ export function OrderSummary() {
         setLoading(true);
         setError(null);
         try {
-          const orderData = await getOrderById(slug as string);
+          // Fetch order data using the updated store function
+          const orderData: OrderWithShipping | null = await getOrderById(
+            slug as string
+          );
           if (orderData) {
             setOrder(orderData);
+            // Note: We don't set shippingCost from orderData here,
+            // as this component calculates it dynamically based on the form during checkout.
           } else {
             setError("Order not found.");
           }
@@ -84,9 +85,9 @@ export function OrderSummary() {
     fetchOrder();
   }, [slug, getOrderById]);
 
-  // Calculate totals with dynamic shipping cost
+  // Calculate totals using the fetched subTotal and the dynamically calculated shipping cost
   const subTotal = order?.subTotal ?? 0;
-  const total = subTotal + shippingCost;
+  const total = subTotal + calculatedShippingCost;
 
   if (loading) {
     return (
@@ -127,9 +128,9 @@ export function OrderSummary() {
   }
 
   return (
-    <div>
-      <Card>
-        <CardContent className="p-6">
+    <div className="w-full">
+      <Card className="w-full">
+        <CardContent className="p-4 sm:p-6">
           <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
           <div className="space-y-4">
             <div className="space-y-3">
@@ -139,7 +140,10 @@ export function OrderSummary() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Shipping</span>
-                <span>{formatCurrency({ number: shippingCost })}</span>
+                {/* Display the dynamically calculated shipping cost */}
+                <span>
+                  {formatCurrency({ number: calculatedShippingCost })}
+                </span>
               </div>
               {/* Removed Tax line for now */}
               <div className="border-t pt-3 flex justify-between font-medium">
@@ -151,21 +155,14 @@ export function OrderSummary() {
             <div className="space-y-4 pt-4">
               <h4 className="text-sm font-medium">Items in Your Order</h4>
               <div className="space-y-3">
-                {order.cart.map(
-                  (
-                    item,
-                    index // Added index as key fallback
-                  ) => (
-                    <div key={index} className="flex justify-between text-sm">
-                      <span>
-                        {item.name} ({item.quantity})
-                      </span>
-                      <span>
-                        {formatCurrency({ number: item.price * item.quantity })}
-                      </span>
+                {/* Add check for order.cart before mapping */}
+                {order.cart &&
+                  order.cart.map((item, index) => (
+                    <div key={index} className="flex flex-col xs:flex-row justify-between text-sm break-words">
+                      <span className="w-full xs:w-auto">{item.name} ({item.quantity})</span>
+                      <span className="w-full xs:w-auto text-right xs:text-left">{formatCurrency({ number: item.price * item.quantity })}</span>
                     </div>
-                  )
-                )}
+                  ))}
               </div>
             </div>
           </div>

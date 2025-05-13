@@ -103,7 +103,7 @@ export default function OrderProcessPage() {
         </section>
 
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className=" px-4 md:px-6">
+          <div className=" px-8 md:px-12">
             <ol className="relative mx-auto max-w-3xl border-l border-border">
               {steps.map((step, idx) => (
                 <li key={step.title} className="mb-16 ml-6 last:mb-0">

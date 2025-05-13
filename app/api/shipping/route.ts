@@ -5,6 +5,26 @@ import { shippingSchema } from "@/schema/shipping-schema"; // Import the Zod sch
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
+// Helper function to handle CORS
+function corsResponse(response: NextResponse) {
+  response.headers.set("Access-Control-Allow-Credentials", "true");
+  response.headers.set("Access-Control-Allow-Origin", "*"); // Adjust this to specific domains in production
+  response.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET,DELETE,PATCH,POST,PUT"
+  );
+  response.headers.set(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+  );
+  return response;
+}
+
+// Handle OPTIONS requests for CORS preflight
+export async function OPTIONS() {
+  return corsResponse(NextResponse.json({}, { status: 200 }));
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -46,17 +66,25 @@ export async function POST(request: NextRequest) {
     );
 
     if (response.success) {
-      return NextResponse.json({
-        status: "success",
-        message: "Shipping details added successfully.",
-        shippingId: response.shippingId, // Return the new shipping document ID
-      });
+      // Fetch the order to get the cart
+      const order = await convex.query(api.orders.getOrder, { orderId });
+      return corsResponse(
+        NextResponse.json({
+          status: "success",
+          message: "Shipping details added successfully.",
+          shippingId: response.shippingId, // Return the new shipping document ID
+          cart: order?.cart || [], // Include the cart in the response
+          total: order?.subTotal || 0 // Optionally include total for convenience
+        })
+      );
     } else {
       // Handle potential errors returned from the mutation itself if needed
       console.error("Convex mutation failed:", response);
-      return NextResponse.json(
-        { error: "Failed to add shipping details in Convex" },
-        { status: 500 }
+      return corsResponse(
+        NextResponse.json(
+          { error: "Failed to add shipping details in Convex" },
+          { status: 500 }
+        )
       );
     }
   } catch (error: unknown) {
@@ -64,9 +92,11 @@ export async function POST(request: NextRequest) {
     // Handle potential JSON parsing errors or other unexpected issues
     const errorMessage =
       error instanceof Error ? error.message : "An unknown error occurred";
-    return NextResponse.json(
-      { error: "Failed to process shipping details", details: errorMessage },
-      { status: 500 }
+    return corsResponse(
+      NextResponse.json(
+        { error: "Failed to process shipping details", details: errorMessage },
+        { status: 500 }
+      )
     );
   }
 }

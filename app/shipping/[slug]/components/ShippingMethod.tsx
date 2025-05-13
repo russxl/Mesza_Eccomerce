@@ -27,30 +27,30 @@ export function ShippingMethod() {
               <RadioGroup
                 onValueChange={field.onChange}
                 defaultValue={field.value}
-                className="grid gap-4"
+                className="flex flex-col gap-4"
               >
-                <div className="flex items-center justify-between rounded-lg border p-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between rounded-lg border p-4 gap-2 sm:gap-0">
                   <div className="flex items-center gap-3">
                     <RadioGroupItem value="standard" id="standard" />
                     <Label htmlFor="standard" className="font-medium">
                       Standard Shipping
                     </Label>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right">
                     <div className="font-medium">Free</div>
                     <div className="text-sm text-muted-foreground">
                       5-7 business days
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center justify-between rounded-lg border p-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between rounded-lg border p-4 gap-2 sm:gap-0">
                   <div className="flex items-center gap-3">
                     <RadioGroupItem value="express" id="express" />
                     <Label htmlFor="express" className="font-medium">
                       Express Shipping
                     </Label>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right">
                     <div className="font-medium">$25.00</div>
                     <div className="text-sm text-muted-foreground">
                       2-3 business days
