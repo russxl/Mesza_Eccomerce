@@ -12,7 +12,7 @@ export const shippingSchema = z.object({
   state: z.string().min(1, { message: "State is required" }),
   zipCode: z.string().min(1, { message: "ZIP code is required" }),
   country: z.string().min(1, { message: "Country is required" }),
-  shippingMethod: z.enum(["standard", "express"], {
+  shippingMethod: z.enum(["Pickup", "Standard"], {
     message: "Please select a shipping method",
   }),
   specialInstructions: z.string().optional(),

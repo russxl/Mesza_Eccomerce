@@ -29,8 +29,13 @@ export function OrderSummary() {
           const province = value.state;
           const shippingMethod = value.shippingMethod;
 
-          // Calculate shipping cost
-          const expressShippingCost = shippingMethod === "express" ? 500 : 0;
+          // If pickup is selected, shipping is free
+          if (shippingMethod === "Pickup") {
+            setCalculatedShippingCost(0);
+            return;
+          }
+
+          // For standard shipping, calculate based on location
           const metroManilaProvinces = [
             "790000",
             "920000",
@@ -42,9 +47,9 @@ export function OrderSummary() {
 
           // Update the calculated shipping cost based on form selections
           if (isMetroManila || isRizal) {
-            setCalculatedShippingCost(999 + expressShippingCost);
+            setCalculatedShippingCost(999);
           } else {
-            setCalculatedShippingCost(3500 + expressShippingCost);
+            setCalculatedShippingCost(3500);
           }
         }
       });

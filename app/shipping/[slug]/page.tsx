@@ -21,10 +21,10 @@ import { sendEmail } from "@/lib/email";
 // Helper function to calculate shipping cost
 // TODO: This should ideally come from a backend configuration or a more dynamic calculation
 const calculateShippingCost = (shippingMethod: string): number => {
-  if (shippingMethod === "standard") {
-    return 999; // Based on the provided image (₱999.00)
+  if (shippingMethod === "Pickup") {
+    return 0; // Based on the provided image (₱999.00)
   }
-  if (shippingMethod === "express") {
+  if (shippingMethod === "Standard") {
     return 1500; // Example cost for express
   }
   return 0; // Default or for free shipping methods
@@ -66,7 +66,7 @@ export default function ShippingPage() {
       state: "",
       zipCode: "", // Added zipCode field
       country: "PH", // Default country
-      shippingMethod: "standard",
+      shippingMethod: "Standard",
       specialInstructions: "",
     },
   });

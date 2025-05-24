@@ -11,9 +11,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Shipping } from "@/schema/shipping-schema";
+import { useEffect, useState } from "react";
 
 export function ShippingMethod() {
-  const { control } = useFormContext<Shipping>();
+  const { control, watch } = useFormContext<Shipping>();
+  const [isMetroManilaOrRizal, setIsMetroManilaOrRizal] = useState(false);
+
+  // Watch for state changes to determine shipping cost
+  useEffect(() => {
+    const subscription = watch((value) => {
+      const province = value.state;
+      const metroManilaProvinces = ["790000", "920000", "MM", "METRO-MANILA"];
+      const isMetroManila = metroManilaProvinces.includes(province || "");
+      const isRizal = province === "RIZAL";
+      setIsMetroManilaOrRizal(isMetroManila || isRizal);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <div>
@@ -31,9 +46,9 @@ export function ShippingMethod() {
               >
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between rounded-lg border p-4 gap-2 sm:gap-0">
                   <div className="flex items-center gap-3">
-                    <RadioGroupItem value="standard" id="standard" />
-                    <Label htmlFor="standard" className="font-medium">
-                      Standard Shipping
+                    <RadioGroupItem value="Pickup" id="Pickup" />
+                    <Label htmlFor="Pickup" className="font-medium">
+                      Pickup
                     </Label>
                   </div>
                   <div className="text-left sm:text-right">
@@ -45,15 +60,17 @@ export function ShippingMethod() {
                 </div>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between rounded-lg border p-4 gap-2 sm:gap-0">
                   <div className="flex items-center gap-3">
-                    <RadioGroupItem value="express" id="express" />
-                    <Label htmlFor="express" className="font-medium">
-                      Express Shipping
+                    <RadioGroupItem value="Standard" id="Standard" />
+                    <Label htmlFor="Standard" className="font-medium">
+                      Standard Shipping
                     </Label>
                   </div>
                   <div className="text-left sm:text-right">
-                    <div className="font-medium">$25.00</div>
+                    <div className="font-medium">
+                      {isMetroManilaOrRizal ? "₱999.00" : "₱3,500.00"}
+                    </div>
                     <div className="text-sm text-muted-foreground">
-                      2-3 business days
+                      3-7 business days
                     </div>
                   </div>
                 </div>
