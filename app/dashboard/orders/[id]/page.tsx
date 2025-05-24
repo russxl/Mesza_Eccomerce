@@ -51,6 +51,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useOrderStore, OrderWithShipping } from "@/store/orderStore";
+import { formatCurrencySigns } from "@/utils/formatToCurrency";
 
 // Form schema for status update
 const statusSchema = z.object({
@@ -706,12 +707,12 @@ export default function OrderDetailsPage() {
                         )}
                       <div className="flex items-center text-sm text-muted-foreground mt-1">
                         <span>
-                          ${item.price.toFixed(2)} × {item.quantity}
+                          {formatCurrencySigns(item.price)} × {item.quantity}
                         </span>
                       </div>
                     </div>
                     <div className="text-right font-medium">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      {formatCurrencySigns(item.price * item.quantity)}
                     </div>
                   </div>
                 ))}
@@ -720,7 +721,7 @@ export default function OrderDetailsPage() {
             <CardFooter className="flex flex-col gap-2 items-end pt-4">
               <div className="flex justify-between w-full md:w-60 text-sm">
                 <span>Subtotal:</span>
-                <span>${order.subTotal.toFixed(2)}</span>
+                <span>{formatCurrencySigns(order.subTotal)}</span>
               </div>
               {order.shipping && (
                 <div className="flex justify-between w-full md:w-60 text-sm">
@@ -731,7 +732,7 @@ export default function OrderDetailsPage() {
               <Separator className="w-full md:w-60 my-1" />
               <div className="flex justify-between w-full md:w-60 font-medium">
                 <span>Total:</span>
-                <span>${order.subTotal.toFixed(2)}</span>
+                <span>{formatCurrencySigns(order.subTotal)}</span>
               </div>
             </CardFooter>
           </Card>

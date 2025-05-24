@@ -36,28 +36,12 @@ export function ShippingAddress() {
     loading,
   } = useShippingStore();
 
-  const selectedProvinceCode = watch("state");
-
   // Fetch provinces on mount
   useEffect(() => {
     if (!shippingLocations && !loading) {
       fetchShippingLocations();
     }
   }, [fetchShippingLocations, loading, shippingLocations]); // Added dependencies
-
-  // Fetch cities when province changes
-  useEffect(() => {
-    if (selectedProvinceCode) {
-      const selectedProvince = shippingLocations?.find(
-        (p) => p.code === selectedProvinceCode
-      );
-
-      if (selectedProvince?.id) {
-        setValue("city", ""); // Reset city selection when province changes
-        fetchCities(selectedProvince.id);
-      }
-    }
-  }, [selectedProvinceCode, shippingLocations, setValue, fetchCities]);
 
   return (
     <div className="grid gap-4">
@@ -78,7 +62,7 @@ export function ShippingAddress() {
       />
       <FormField
         control={control}
-        name="address"
+        name="apartment"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Address Line 2</FormLabel>
@@ -99,10 +83,29 @@ export function ShippingAddress() {
               <FormLabel>Province</FormLabel>
               <Select
                 onValueChange={(value) => {
-                  // Make sure we're setting the code value to the form
-                  field.onChange(value);
+                  // Parse the JSON string back to an object
+                  const selectedProvince = JSON.parse(value);
+                  // Set the province name to the form
+                  field.onChange(selectedProvince.nativeName);
+                  // Use the code to fetch cities
+                  const province = shippingLocations?.find(
+                    (p) => p.code === selectedProvince.code
+                  );
+                  if (province?.id) {
+                    setValue("city", ""); // Reset city selection when province changes
+                    fetchCities(province.id);
+                  }
                 }}
-                value={field.value}
+                value={
+                  field.value && shippingLocations?.length 
+                    ? shippingLocations.find(p => p.nativeName === field.value)
+                      ? JSON.stringify({
+                          code: shippingLocations.find(p => p.nativeName === field.value)?.code,
+                          nativeName: field.value
+                        })
+                      : "" 
+                    : ""
+                }
                 disabled={loading}
               >
                 <FormControl>
@@ -121,7 +124,13 @@ export function ShippingAddress() {
                     </SelectItem>
                   ) : (
                     shippingLocations?.map((province) => (
-                      <SelectItem key={province.id} value={province.nativeName}>
+                      <SelectItem 
+                        key={province.id} 
+                        value={JSON.stringify({
+                          code: province.code,
+                          nativeName: province.nativeName
+                        })}
+                      >
                         {formatName(province.nativeName)}
                       </SelectItem>
                     ))
@@ -144,14 +153,14 @@ export function ShippingAddress() {
                   // Make sure we're setting the code value to the form
                   field.onChange(value);
                 }}
-                value={field.value}
-                disabled={!selectedProvinceCode || loading}
+                value={field.value || ""}
+                disabled={!watch("state") || loading}
               >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue
                       placeholder={
-                        !selectedProvinceCode
+                        !watch("state")
                           ? "Select province first"
                           : loading
                             ? "Loading cities..."

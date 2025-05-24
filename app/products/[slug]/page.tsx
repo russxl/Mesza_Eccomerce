@@ -29,13 +29,11 @@ interface Product {
   /* eslint-enable @typescript-eslint/no-explicit-any */
 }
 
-// Define a type for product specifications
 interface Specification {
   key: string;
   value: string;
 }
 
-// Create a fetcher function that can be used with React Query
 async function getProductById(slug: string): Promise<Product | null> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -45,7 +43,7 @@ async function getProductById(slug: string): Promise<Product | null> {
     });
     
     if (!response.ok) {
-      return null; // Return null instead of throwing error to handle 404 case
+      return null; 
     }
     
     return response.json();

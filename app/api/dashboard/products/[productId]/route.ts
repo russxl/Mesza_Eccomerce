@@ -5,8 +5,6 @@ import { Id } from "@/convex/_generated/dataModel";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
-
-
 export async function GET(
   request: Request,
   context: { params: Promise<{ productId: string }> }
